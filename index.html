@@ -56,7 +56,8 @@ nav{
     gap:8px;
 }
 
-nav button{
+nav button,
+.account-btn{
     border:0;
     border-radius:9px;
     padding:10px 14px;
@@ -65,7 +66,8 @@ nav button{
     cursor:pointer;
 }
 
-nav button:hover{
+nav button:hover,
+.account-btn:hover{
     background:#45ff88;
     color:#061009;
 }
@@ -74,6 +76,12 @@ nav button:hover{
     background:#45ff88 !important;
     color:#061009 !important;
     font-weight:bold;
+}
+
+.balance{
+    color:#45ff88;
+    font-weight:bold;
+    padding:10px;
 }
 
 .container{
@@ -160,6 +168,33 @@ nav button:hover{
     color:#45ff88;
 }
 
+/* ACCOUNT */
+
+.account-panel{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.user-info{
+    color:#b9c4d5;
+}
+
+.user-info strong{
+    color:#45ff88;
+}
+
+.login-required{
+    text-align:center;
+    padding:30px;
+    color:#aeb8c8;
+}
+
+.login-required button{
+    margin-top:15px;
+}
+
 /* TOPUP */
 
 .topup-tabs{
@@ -227,6 +262,18 @@ nav button:hover{
     border-color:#45ff88;
 }
 
+.topup-submit{
+    width:100%;
+    padding:13px;
+    margin-top:15px;
+    border:0;
+    border-radius:9px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
 /* PRODUCTS */
 
 .products{
@@ -287,6 +334,13 @@ nav button:hover{
 .confirm:hover,
 .checkout:hover{
     background:#69ffa0;
+}
+
+.buy:disabled,
+.checkout:disabled,
+.topup-submit:disabled{
+    opacity:.5;
+    cursor:not-allowed;
 }
 
 /* SUPPORT */
@@ -418,6 +472,108 @@ nav button:hover{
     font-size:20px;
 }
 
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    background:rgba(0,0,0,.8);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:450px;
+    background:#10151e;
+    border:1px solid #344156;
+    border-radius:20px;
+    padding:30px;
+    position:relative;
+}
+
+.modal-box h2{
+    margin-bottom:20px;
+}
+
+.modal-box input{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border-radius:9px;
+    border:1px solid #303b4e;
+    background:#161d29;
+    color:white;
+}
+
+.modal-btn{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.switch-auth{
+    margin-top:15px;
+    text-align:center;
+    color:#9da8ba;
+    cursor:pointer;
+}
+
+.switch-auth span{
+    color:#45ff88;
+}
+
+.modal-close{
+    position:absolute;
+    top:12px;
+    right:12px;
+    border:0;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#202938;
+    color:white;
+    cursor:pointer;
+}
+
+.error{
+    color:#ff6262;
+    margin-bottom:12px;
+}
+
+.success{
+    color:#45ff88;
+    margin-bottom:12px;
+}
+
+/* HISTORY */
+
+.history-item{
+    background:#161d29;
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+    border-left:3px solid #45ff88;
+}
+
+.status{
+    margin-top:5px;
+    color:#45ff88;
+}
+
 /* SUCCESS */
 
 .success-overlay{
@@ -480,27 +636,6 @@ nav button:hover{
     cursor:pointer;
 }
 
-/* ORDER */
-
-.order-result{
-    display:none;
-    margin-top:20px;
-    padding:15px;
-    border:1px solid #45ff88;
-    border-radius:12px;
-    background:#101820;
-}
-
-.order-result.show{
-    display:block;
-}
-
-.order-id{
-    color:#45ff88;
-    font-weight:bold;
-    font-size:20px;
-}
-
 footer{
     text-align:center;
     border-top:1px solid #202938;
@@ -548,11 +683,34 @@ Trang chủ
 </button>
 
 <button onclick="go('topup')">
-Nạp thẻ
+Nạp tiền
 </button>
 
 <button onclick="go('products')">
 Mua hàng
+</button>
+
+<button onclick="go('history')">
+Đơn hàng
+</button>
+
+<span id="balanceDisplay" class="balance">
+💰 0đ
+</span>
+
+<button
+id="loginButton"
+class="account-btn"
+onclick="openAuth()">
+Đăng nhập
+</button>
+
+<button
+id="logoutButton"
+class="account-btn"
+style="display:none"
+onclick="logout()">
+Đăng xuất
 </button>
 
 <button
@@ -608,12 +766,40 @@ Web uy tín, giá dễ tiếp cận.
 
 </div>
 
-
 <div class="hero-image">
 
 <img
 src="https://play-lh.googleusercontent.com/Px393UXgdcfM8LySdsZyJ41rDhSBgN2_YOhDOsekW18-5Huv5-lBKlrTDJZwLOT0DTMPCdGWnOUJ4Alj6sLZfn0=w526-h296-rw"
 alt="GenPlay">
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ACCOUNT -->
+
+<section class="container">
+
+<div class="box">
+
+<h2>👤 TÀI KHOẢN</h2>
+
+<div
+id="accountContent"
+class="login-required">
+
+Bạn chưa đăng nhập.
+
+<br>
+
+<button
+class="account-btn"
+onclick="openAuth()">
+ĐĂNG NHẬP / ĐĂNG KÝ
+</button>
 
 </div>
 
@@ -635,7 +821,7 @@ Hello mấy thằng em, chào mừng đến với web tụi anh.
 </p>
 
 <p>
-Web uy tín, giá rẻ, dễ sử dụng.
+Web uy tín, giá dễ sử dụng.
 </p>
 
 <p>
@@ -643,7 +829,7 @@ Shop còn nhỏ nên hiện tại chỉ bán những sản phẩm đang có.
 </p>
 
 <p>
-Vui lòng đợi shop cập nhật thêm sản phẩm.
+Mọi giao dịch đều cần có tài khoản.
 </p>
 
 </div>
@@ -656,131 +842,115 @@ Vui lòng đợi shop cập nhật thêm sản phẩm.
 <section class="container" id="topup">
 
 <h2 class="title">
-💳 NẠP <span>THẺ</span>
+💳 NẠP <span>TIỀN</span>
 </h2>
 
 <div class="box">
 
-<div class="topup-tabs">
+<div id="topupLoginMessage"
+class="login-required">
+
+🔒 Bạn cần đăng nhập để nạp tiền.
+
+<br>
 
 <button
-class="active"
-onclick="changeNetwork('Viettel',this)">
-Viettel
-</button>
-
-<button
-onclick="changeNetwork('VinaPhone',this)">
-VinaPhone
-</button>
-
-<button
-onclick="changeNetwork('MobiFone',this)">
-MobiFone
+class="account-btn"
+onclick="openAuth()">
+ĐĂNG NHẬP
 </button>
 
 </div>
 
-<h3 id="networkTitle">
-Thẻ Viettel
-</h3>
+<div id="topupContent" style="display:none">
 
-<br>
-
-<p style="color:#aeb8c8;">
-⚠️ Phí nạp 18% — nhận 82% mệnh giá.
-</p>
+<h3>Chọn số tiền muốn nạp</h3>
 
 <br>
 
 <div class="topup-grid">
 
 <div class="topup-card"
-onclick="selectCard(10000,this)">
+onclick="selectTopup(10000,this)">
 <h3>10.000đ</h3>
-<div class="receive">Nhận 8.200đ</div>
+<div class="receive">+10.000đ</div>
 </div>
 
 <div class="topup-card"
-onclick="selectCard(20000,this)">
+onclick="selectTopup(20000,this)">
 <h3>20.000đ</h3>
-<div class="receive">Nhận 16.400đ</div>
+<div class="receive">+20.000đ</div>
 </div>
 
 <div class="topup-card"
-onclick="selectCard(50000,this)">
+onclick="selectTopup(50000,this)">
 <h3>50.000đ</h3>
-<div class="receive">Nhận 41.000đ</div>
+<div class="receive">+50.000đ</div>
 </div>
 
 <div class="topup-card"
-onclick="selectCard(100000,this)">
+onclick="selectTopup(100000,this)">
 <h3>100.000đ</h3>
-<div class="receive">Nhận 82.000đ</div>
+<div class="receive">+100.000đ</div>
 </div>
 
 <div class="topup-card"
-onclick="selectCard(200000,this)">
+onclick="selectTopup(200000,this)">
 <h3>200.000đ</h3>
-<div class="receive">Nhận 164.000đ</div>
+<div class="receive">+200.000đ</div>
+</div>
+
+<div class="topup-card"
+onclick="selectTopup(500000,this)">
+<h3>500.000đ</h3>
+<div class="receive">+500.000đ</div>
 </div>
 
 </div>
 
-<br>
+<div id="topupForm" style="display:none;margin-top:25px">
 
-<div id="cardForm" style="display:none;">
+<h3>📋 TẠO YÊU CẦU NẠP</h3>
 
-<h3>📝 THÔNG TIN NẠP THẺ</h3>
-
-<br>
-
-<label>Mã thẻ</label>
-
-<input
-id="cardCode"
-class="input"
-type="text"
-placeholder="Nhập mã thẻ"
-autocomplete="off">
-
-<br><br>
-
-<label>Serial</label>
-
-<input
-id="cardSerial"
-class="input"
-type="text"
-placeholder="Nhập serial"
-autocomplete="off">
-
-<p
-id="selectedInfo"
-style="
-color:#45ff88;
-margin-top:15px;
-font-weight:bold;">
+<p style="color:#9da8ba;margin-top:10px">
+Số tiền:
+<strong id="selectedTopupAmount"
+style="color:#45ff88">
+0đ
+</strong>
 </p>
 
-<button
-class="confirm"
-onclick="submitCard()">
+<select
+id="topupMethod"
+class="input">
 
-XÁC NHẬN THANH TOÁN
+<option value="bank">
+Chuyển khoản ngân hàng
+</option>
+
+<option value="manual">
+Xác nhận thủ công
+</option>
+
+</select>
+
+<button
+class="topup-submit"
+onclick="submitTopup()">
+
+TẠO YÊU CẦU NẠP
 
 </button>
 
-<p style="
-color:#8993a5;
-font-size:13px;
-margin-top:12px;
-line-height:1.6;">
+<p
+style="color:#8993a5;font-size:13px;margin-top:12px">
 
-Thông tin thẻ không được gửi lên Discord.
-Shop sẽ kiểm tra giao dịch trước khi xử lý.
+Sau khi thanh toán, admin sẽ kiểm tra và duyệt.
+Số dư chỉ tăng sau khi yêu cầu được duyệt.
 
 </p>
+
+</div>
 
 </div>
 
@@ -798,7 +968,6 @@ Shop sẽ kiểm tra giao dịch trước khi xử lý.
 </h2>
 
 <div class="products">
-
 
 <div class="product">
 
@@ -820,7 +989,7 @@ Code sử dụng 1 ngày
 
 <button
 class="buy"
-onclick="addCart('GenPlay 1 Ngày',13000)">
+onclick="addCart('GenPlay 1 Ngày')">
 
 🛒 Thêm vào giỏ
 
@@ -851,7 +1020,7 @@ Code sử dụng 1 tuần
 
 <button
 class="buy"
-onclick="addCart('GenPlay 1 Tuần',49000)">
+onclick="addCart('GenPlay 1 Tuần')">
 
 🛒 Thêm vào giỏ
 
@@ -882,13 +1051,36 @@ Code sử dụng 1 tháng
 
 <button
 class="buy"
-onclick="addCart('GenPlay 1 Tháng',120000)">
+onclick="addCart('GenPlay 1 Tháng')">
 
 🛒 Thêm vào giỏ
 
 </button>
 
 </div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HISTORY -->
+
+<section class="container" id="history">
+
+<h2 class="title">
+📦 LỊCH SỬ <span>ĐƠN HÀNG</span>
+</h2>
+
+<div class="box">
+
+<div
+id="historyContent"
+class="login-required">
+
+Đăng nhập để xem lịch sử đơn hàng.
 
 </div>
 
@@ -929,7 +1121,7 @@ Vui lòng đợi shop cập nhật thêm sản phẩm.
 </h2>
 
 <p>
-Vào Discord nhận mã giảm giá 10%.
+Liên hệ Discord để nhận hỗ trợ.
 </p>
 
 <div class="support-buttons">
@@ -997,9 +1189,7 @@ Chưa có sản phẩm.
 🎁 MÃ GIẢM GIÁ
 </h3>
 
-<p style="
-color:#8993a5;
-margin-top:5px;">
+<p style="color:#8993a5;margin-top:5px">
 
 Nhập mã để giảm 10%.
 
@@ -1041,6 +1231,11 @@ THÀNH TIỀN:
 <strong id="cartTotal">0đ</strong>
 </div>
 
+<div>
+Số dư:
+<strong id="cartBalance">0đ</strong>
+</div>
+
 </div>
 
 
@@ -1051,6 +1246,106 @@ onclick="checkout()">
 XÁC NHẬN THANH TOÁN
 
 </button>
+
+</div>
+
+
+<!-- AUTH MODAL -->
+
+<div
+id="authModal"
+class="modal">
+
+<div class="modal-box">
+
+<button
+class="modal-close"
+onclick="closeAuth()">
+×
+</button>
+
+<div id="loginForm">
+
+<h2>🔐 ĐĂNG NHẬP</h2>
+
+<div id="loginMessage"></div>
+
+<input
+id="loginUsername"
+placeholder="Tên tài khoản"
+autocomplete="username">
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Mật khẩu"
+autocomplete="current-password">
+
+<button
+class="modal-btn"
+onclick="login()">
+
+ĐĂNG NHẬP
+
+</button>
+
+<div
+class="switch-auth"
+onclick="showRegister()">
+
+Chưa có tài khoản?
+<span>Đăng ký</span>
+
+</div>
+
+</div>
+
+
+<div
+id="registerForm"
+style="display:none">
+
+<h2>📝 ĐĂNG KÝ</h2>
+
+<div id="registerMessage"></div>
+
+<input
+id="registerUsername"
+placeholder="Tên tài khoản"
+autocomplete="username">
+
+<input
+id="registerPassword"
+type="password"
+placeholder="Mật khẩu"
+autocomplete="new-password">
+
+<input
+id="registerPassword2"
+type="password"
+placeholder="Nhập lại mật khẩu"
+autocomplete="new-password">
+
+<button
+class="modal-btn"
+onclick="register()">
+
+TẠO TÀI KHOẢN
+
+</button>
+
+<div
+class="switch-auth"
+onclick="showLogin()">
+
+Đã có tài khoản?
+<span>Đăng nhập</span>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -1068,11 +1363,11 @@ id="successOverlay">
 </div>
 
 <h2>
-CẢM ƠN BẠN ĐÃ MUA HÀNG!
+MUA HÀNG THÀNH CÔNG!
 </h2>
 
 <p>
-Đơn hàng của bạn đã được ghi nhận.
+Đơn hàng đã được tạo và thanh toán bằng số dư tài khoản.
 </p>
 
 <p class="luck">
@@ -1092,11 +1387,9 @@ id="successOrderId"
 class="order-id">
 </div>
 
-<p style="
-margin-top:8px;
-font-size:14px;">
+<p style="margin-top:8px;font-size:14px">
 
-Trạng thái: ⏳ CHỜ DUYỆT
+Trạng thái: 🟢 ĐÃ THANH TOÁN
 
 </p>
 
@@ -1117,9 +1410,9 @@ onclick="closeSuccess()">
 
 <script>
 
-/* =========================
-   CẤU HÌNH
-========================= */
+/* =====================================================
+   CONFIG
+===================================================== */
 
 const API_URL =
 "https://thang36-shop.onrender.com";
@@ -1130,26 +1423,86 @@ const DISCORD =
 const TIKTOK =
 "https://www.tiktok.com/@thang_213zey?is_from_webapp=1&sender_device=pc";
 
-const DISCOUNT_CODE =
-"thang36vipvailon";
 
+/* =====================================================
+   STATE
+===================================================== */
 
-/* =========================
-   BIẾN
-========================= */
+let token =
+localStorage.getItem("thang36_token");
 
-let discountApplied = false;
+let currentUser = null;
 
 let cart = [];
 
-let selectedNetwork = "Viettel";
+let discountApplied = false;
 
-let selectedAmount = 0;
+let selectedTopupAmount = 0;
 
 
-/* =========================
-   ĐIỀU HƯỚNG
-========================= */
+/* =====================================================
+   API
+===================================================== */
+
+async function api(
+    endpoint,
+    options = {}
+){
+
+    const headers = {
+        "Content-Type":"application/json",
+        ...(options.headers || {})
+    };
+
+    if(token){
+
+        headers.Authorization =
+            "Bearer " + token;
+
+    }
+
+    const response =
+        await fetch(
+            API_URL + endpoint,
+            {
+                ...options,
+                headers
+            }
+        );
+
+    let data = {};
+
+    try{
+        data = await response.json();
+    }catch{}
+
+    if(
+        response.status === 401 &&
+        token
+    ){
+
+        token = null;
+        currentUser = null;
+
+        localStorage.removeItem(
+            "thang36_token"
+        );
+
+        updateAccountUI();
+
+    }
+
+    return {
+        response,
+        data
+    };
+
+}
+
+
+/* =====================================================
+   NAV
+===================================================== */
 
 function go(id){
 
@@ -1167,9 +1520,9 @@ function go(id){
 }
 
 
-/* =========================
-   LINK
-========================= */
+/* =====================================================
+   LINKS
+===================================================== */
 
 function openDiscord(){
 
@@ -1190,45 +1543,470 @@ function openTikTok(){
 }
 
 
-/* =========================
-   NẠP THẺ
-========================= */
+/* =====================================================
+   AUTH UI
+===================================================== */
 
-function changeNetwork(
-    network,
-    button
-){
-
-    selectedNetwork = network;
+function openAuth(){
 
     document
-        .getElementById("networkTitle")
-        .innerText =
-        "Thẻ " + network;
+        .getElementById("authModal")
+        .classList
+        .add("show");
+
+    showLogin();
+
+}
+
+function closeAuth(){
 
     document
-        .querySelectorAll(
-            ".topup-tabs button"
-        )
-        .forEach(btn => {
+        .getElementById("authModal")
+        .classList
+        .remove("show");
 
-            btn.classList.remove(
-                "active"
-            );
+}
 
-        });
+function showLogin(){
 
-    button.classList.add("active");
+    document
+        .getElementById("loginForm")
+        .style.display = "block";
+
+    document
+        .getElementById("registerForm")
+        .style.display = "none";
+
+}
+
+function showRegister(){
+
+    document
+        .getElementById("loginForm")
+        .style.display = "none";
+
+    document
+        .getElementById("registerForm")
+        .style.display = "block";
 
 }
 
 
-function selectCard(
+/* =====================================================
+   REGISTER
+===================================================== */
+
+async function register(){
+
+    const username =
+        document
+            .getElementById(
+                "registerUsername"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "registerPassword"
+            )
+            .value;
+
+    const password2 =
+        document
+            .getElementById(
+                "registerPassword2"
+            )
+            .value;
+
+    const message =
+        document
+            .getElementById(
+                "registerMessage"
+            );
+
+    message.innerHTML = "";
+
+    if(password !== password2){
+
+        message.innerHTML =
+            `<div class="error">
+            Mật khẩu nhập lại không giống nhau.
+            </div>`;
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await api(
+                "/api/register",
+                {
+                    method:"POST",
+
+                    body:JSON.stringify({
+                        username,
+                        password
+                    })
+                }
+            );
+
+        if(!result.response.ok){
+
+            message.innerHTML =
+                `<div class="error">
+                ${escapeHTML(
+                    result.data.message ||
+                    "Đăng ký thất bại."
+                )}
+                </div>`;
+
+            return;
+
+        }
+
+        message.innerHTML =
+            `<div class="success">
+            Đăng ký thành công! Đang chuyển sang đăng nhập...
+            </div>`;
+
+        setTimeout(
+            showLogin,
+            800
+        );
+
+    }catch(error){
+
+        message.innerHTML =
+            `<div class="error">
+            Không kết nối được server.
+            </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function login(){
+
+    const username =
+        document
+            .getElementById(
+                "loginUsername"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "loginPassword"
+            )
+            .value;
+
+    const message =
+        document
+            .getElementById(
+                "loginMessage"
+            );
+
+    message.innerHTML = "";
+
+    try{
+
+        const result =
+            await api(
+                "/api/login",
+                {
+                    method:"POST",
+
+                    body:JSON.stringify({
+                        username,
+                        password
+                    })
+                }
+            );
+
+        if(!result.response.ok){
+
+            message.innerHTML =
+                `<div class="error">
+                ${escapeHTML(
+                    result.data.message ||
+                    "Đăng nhập thất bại."
+                )}
+                </div>`;
+
+            return;
+
+        }
+
+        token =
+            result.data.token;
+
+        currentUser =
+            result.data.user;
+
+        localStorage.setItem(
+            "thang36_token",
+            token
+        );
+
+        updateAccountUI();
+
+        closeAuth();
+
+        loadHistory();
+
+        alert(
+            "Đăng nhập thành công!"
+        );
+
+    }catch(error){
+
+        message.innerHTML =
+            `<div class="error">
+            Không kết nối được server.
+            </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+    try{
+
+        if(token){
+
+            await api(
+                "/api/logout",
+                {
+                    method:"POST"
+                }
+            );
+
+        }
+
+    }catch{}
+
+    token = null;
+
+    currentUser = null;
+
+    localStorage.removeItem(
+        "thang36_token"
+    );
+
+    cart = [];
+
+    updateCart();
+
+    updateAccountUI();
+
+}
+
+
+/* =====================================================
+   GET ME
+===================================================== */
+
+async function loadMe(){
+
+    if(!token){
+
+        updateAccountUI();
+
+        return;
+
+    }
+
+    try{
+
+        const result =
+            await api(
+                "/api/me"
+            );
+
+        if(
+            result.response.ok &&
+            result.data.success
+        ){
+
+            currentUser =
+                result.data.user;
+
+        }else{
+
+            token = null;
+
+            localStorage.removeItem(
+                "thang36_token"
+            );
+
+            currentUser = null;
+
+        }
+
+    }catch{
+
+        /*
+         Không xóa token chỉ vì server
+         tạm thời không phản hồi.
+        */
+
+    }
+
+    updateAccountUI();
+
+}
+
+
+/* =====================================================
+   ACCOUNT UI
+===================================================== */
+
+function updateAccountUI(){
+
+    const balance =
+        currentUser
+        ? Number(currentUser.balance || 0)
+        : 0;
+
+    document
+        .getElementById(
+            "balanceDisplay"
+        )
+        .innerText =
+        "💰 " +
+        balance.toLocaleString("vi-VN") +
+        "đ";
+
+    document
+        .getElementById(
+            "cartBalance"
+        )
+        .innerText =
+        balance.toLocaleString("vi-VN") +
+        "đ";
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+    const accountContent =
+        document.getElementById(
+            "accountContent"
+        );
+
+    const topupLoginMessage =
+        document.getElementById(
+            "topupLoginMessage"
+        );
+
+    const topupContent =
+        document.getElementById(
+            "topupContent"
+        );
+
+    if(currentUser){
+
+        loginButton.style.display =
+            "none";
+
+        logoutButton.style.display =
+            "inline-block";
+
+        accountContent.innerHTML = `
+            <div class="account-panel">
+                <div class="user-info">
+                    Xin chào,
+                    <strong>
+                        ${escapeHTML(currentUser.username)}
+                    </strong>
+                </div>
+
+                <div class="user-info">
+                    Số dư:
+                    <strong>
+                        ${balance.toLocaleString("vi-VN")}đ
+                    </strong>
+                </div>
+            </div>
+        `;
+
+        topupLoginMessage.style.display =
+            "none";
+
+        topupContent.style.display =
+            "block";
+
+    }else{
+
+        loginButton.style.display =
+            "inline-block";
+
+        logoutButton.style.display =
+            "none";
+
+        accountContent.innerHTML = `
+            Bạn chưa đăng nhập.
+            <br>
+            <button
+                class="account-btn"
+                onclick="openAuth()">
+                ĐĂNG NHẬP / ĐĂNG KÝ
+            </button>
+        `;
+
+        topupLoginMessage.style.display =
+            "block";
+
+        topupContent.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   TOPUP
+===================================================== */
+
+function selectTopup(
     amount,
     element
 ){
 
-    selectedAmount = amount;
+    if(!currentUser){
+
+        openAuth();
+
+        return;
+
+    }
+
+    selectedTopupAmount =
+        amount;
 
     document
         .querySelectorAll(
@@ -1242,101 +2020,162 @@ function selectCard(
 
         });
 
-    element.classList.add("active");
-
-    const receive =
-        Math.round(
-            amount * 0.82
-        );
-
-    document
-        .getElementById("cardForm")
-        .style.display = "block";
-
-    document
-        .getElementById("selectedInfo")
-        .innerText =
-        selectedNetwork +
-        " " +
-        amount.toLocaleString("vi-VN") +
-        "đ → nhận " +
-        receive.toLocaleString("vi-VN") +
-        "đ";
-
-}
-
-
-/*
-Không gửi mã thẻ/serial lên Discord
-hoặc server.
-*/
-
-function submitCard(){
-
-    const code =
-        document
-            .getElementById("cardCode")
-            .value
-            .trim();
-
-    const serial =
-        document
-            .getElementById("cardSerial")
-            .value
-            .trim();
-
-    if(selectedAmount === 0){
-
-        alert(
-            "Vui lòng chọn mệnh giá thẻ!"
-        );
-
-        return;
-
-    }
-
-    if(
-        code === "" ||
-        serial === ""
-    ){
-
-        alert(
-            "Vui lòng nhập đầy đủ thông tin!"
-        );
-
-        return;
-
-    }
-
-    alert(
-        "Thông tin đã được nhập. " +
-        "Shop sẽ kiểm tra giao dịch " +
-        "trước khi xử lý."
+    element.classList.add(
+        "active"
     );
 
     document
-        .getElementById("cardCode")
-        .value = "";
+        .getElementById(
+            "topupForm"
+        )
+        .style.display =
+        "block";
 
     document
-        .getElementById("cardSerial")
-        .value = "";
+        .getElementById(
+            "selectedTopupAmount"
+        )
+        .innerText =
+        amount.toLocaleString(
+            "vi-VN"
+        ) + "đ";
 
 }
 
 
-/* =========================
-   GIỎ HÀNG
-========================= */
+async function submitTopup(){
 
-function addCart(
-    name,
-    price
-){
+    if(!currentUser){
+
+        openAuth();
+
+        return;
+
+    }
+
+    if(selectedTopupAmount <= 0){
+
+        alert(
+            "Vui lòng chọn số tiền."
+        );
+
+        return;
+
+    }
+
+    const method =
+        document
+            .getElementById(
+                "topupMethod"
+            )
+            .value;
+
+    const button =
+        document.querySelector(
+            ".topup-submit"
+        );
+
+    button.disabled = true;
+
+    button.innerText =
+        "ĐANG TẠO YÊU CẦU...";
+
+    try{
+
+        const result =
+            await api(
+                "/api/topups",
+                {
+                    method:"POST",
+
+                    body:JSON.stringify({
+
+                        amount:
+                            selectedTopupAmount,
+
+                        method:
+                            method
+
+                    })
+                }
+            );
+
+        if(!result.response.ok){
+
+            alert(
+                result.data.message ||
+                "Không tạo được yêu cầu."
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Đã tạo yêu cầu nạp: " +
+            result.data.topup.id +
+            "\n\nChờ admin duyệt."
+        );
+
+        selectedTopupAmount = 0;
+
+        document
+            .getElementById(
+                "topupForm"
+            )
+            .style.display =
+            "none";
+
+        document
+            .querySelectorAll(
+                ".topup-card"
+            )
+            .forEach(card => {
+
+                card.classList.remove(
+                    "active"
+                );
+
+            });
+
+    }catch{
+
+        alert(
+            "Không kết nối được server."
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.innerText =
+            "TẠO YÊU CẦU NẠP";
+
+    }
+
+}
+
+
+/* =====================================================
+   CART
+===================================================== */
+
+function addCart(name){
+
+    if(!currentUser){
+
+        alert(
+            "Bạn phải đăng nhập trước khi mua hàng."
+        );
+
+        openAuth();
+
+        return;
+
+    }
 
     cart.push({
-        name:name,
-        price:price
+        name:name
     });
 
     updateCart();
@@ -1348,7 +2187,10 @@ function addCart(
 
 function removeCart(index){
 
-    cart.splice(index,1);
+    cart.splice(
+        index,
+        1
+    );
 
     updateCart();
 
@@ -1375,11 +2217,21 @@ function closeCart(){
 }
 
 
-/* =========================
-   GIẢM GIÁ
-========================= */
+/* =====================================================
+   DISCOUNT
+===================================================== */
 
 function applyDiscount(){
+
+    if(!currentUser){
+
+        alert(
+            "Vui lòng đăng nhập."
+        );
+
+        return;
+
+    }
 
     const input =
         document
@@ -1395,15 +2247,18 @@ function applyDiscount(){
                 "discountMessage"
             );
 
-    if(
-        input.toLowerCase() ===
-        DISCOUNT_CODE.toLowerCase()
-    ){
+    /*
+       Chỉ hiển thị trạng thái ở frontend.
+       Server vẫn kiểm tra mã giảm giá thật
+       khi checkout.
+    */
+
+    if(input.length > 0){
 
         discountApplied = true;
 
         message.innerText =
-            "✅ Áp dụng thành công! Giảm 10%.";
+            "✓ Đã nhập mã. Server sẽ kiểm tra khi thanh toán.";
 
         message.style.color =
             "#45ff88";
@@ -1413,7 +2268,7 @@ function applyDiscount(){
         discountApplied = false;
 
         message.innerText =
-            "❌ Mã giảm giá không đúng.";
+            "Vui lòng nhập mã.";
 
         message.style.color =
             "#ff5555";
@@ -1425,31 +2280,43 @@ function applyDiscount(){
 }
 
 
-/* =========================
-   CẬP NHẬT GIỎ
-========================= */
+/* =====================================================
+   CART UPDATE
+===================================================== */
 
 function updateCart(){
 
     document
-        .getElementById("cartCount")
+        .getElementById(
+            "cartCount"
+        )
         .innerText =
         cart.length;
 
     const box =
-        document
-            .getElementById(
-                "cartItems"
-            );
+        document.getElementById(
+            "cartItems"
+        );
 
     let subtotal = 0;
 
+    /*
+       Giá chỉ để hiển thị.
+       Giá thật sẽ do server tính.
+    */
+
+    const prices = {
+        "GenPlay 1 Ngày":13000,
+        "GenPlay 1 Tuần":49000,
+        "GenPlay 1 Tháng":120000
+    };
+
     cart.forEach(item => {
 
-        subtotal += item.price;
+        subtotal +=
+            prices[item.name] || 0;
 
     });
-
 
     let discount = 0;
 
@@ -1460,20 +2327,18 @@ function updateCart(){
 
         discount =
             Math.round(
-                subtotal * 0.10
+                subtotal * .10
             );
 
     }
 
-
     const total =
         subtotal - discount;
-
 
     if(cart.length === 0){
 
         box.innerHTML = `
-            <p style="color:#8993a5;">
+            <p style="color:#8993a5">
                 Chưa có sản phẩm.
             </p>
         `;
@@ -1485,6 +2350,9 @@ function updateCart(){
         cart.forEach(
             (item,index) => {
 
+                const price =
+                    prices[item.name] || 0;
+
                 html += `
                     <div class="cart-item">
 
@@ -1493,15 +2361,13 @@ function updateCart(){
                         </strong>
 
                         <div class="cart-item-price">
-                            ${item.price.toLocaleString("vi-VN")}đ
+                            ${price.toLocaleString("vi-VN")}đ
                         </div>
 
                         <button
                             class="remove"
                             onclick="removeCart(${index})">
-
                             Xóa
-
                         </button>
 
                     </div>
@@ -1514,7 +2380,6 @@ function updateCart(){
 
     }
 
-
     document
         .getElementById(
             "cartSubtotal"
@@ -1523,7 +2388,6 @@ function updateCart(){
         subtotal.toLocaleString(
             "vi-VN"
         ) + "đ";
-
 
     document
         .getElementById(
@@ -1535,7 +2399,6 @@ function updateCart(){
             "vi-VN"
         ) + "đ";
 
-
     document
         .getElementById(
             "cartTotal"
@@ -1545,56 +2408,64 @@ function updateCart(){
             "vi-VN"
         ) + "đ";
 
+    document
+        .getElementById(
+            "cartBalance"
+        )
+        .innerText =
+        (
+            currentUser
+            ? Number(currentUser.balance || 0)
+            : 0
+        ).toLocaleString(
+            "vi-VN"
+        ) + "đ";
+
 }
 
 
-/* =========================
-   THANH TOÁN / TẠO ĐƠN
-========================= */
+/* =====================================================
+   CHECKOUT
+===================================================== */
 
 async function checkout(){
+
+    if(!currentUser){
+
+        alert(
+            "Bạn phải đăng nhập trước khi mua hàng."
+        );
+
+        closeCart();
+
+        openAuth();
+
+        return;
+
+    }
 
     if(cart.length === 0){
 
         alert(
-            "Giỏ hàng đang trống!"
+            "Giỏ hàng đang trống."
         );
 
         return;
 
     }
 
-
-    let subtotal = 0;
-
-    cart.forEach(item => {
-
-        subtotal += item.price;
-
-    });
-
-
-    let discount = 0;
-
-    if(discountApplied){
-
-        discount =
-            Math.round(
-                subtotal * 0.10
-            );
-
-    }
-
-
-    const total =
-        subtotal - discount;
-
-
     const productNames =
         cart
             .map(item => item.name)
             .join(", ");
 
+    const discountCode =
+        document
+            .getElementById(
+                "discountCode"
+            )
+            .value
+            .trim();
 
     const button =
         document.querySelector(
@@ -1604,66 +2475,52 @@ async function checkout(){
     button.disabled = true;
 
     button.innerText =
-        "ĐANG TẠO ĐƠN...";
-
+        "ĐANG THANH TOÁN...";
 
     try{
 
-        const response =
-            await fetch(
-                API_URL +
+        /*
+           Server tự kiểm tra:
+           - đăng nhập
+           - sản phẩm
+           - giá
+           - mã giảm giá
+           - số dư
+           - trừ tiền
+        */
+
+        const result =
+            await api(
                 "/api/orders",
                 {
                     method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
 
                     body:JSON.stringify({
 
                         product:
                             productNames,
 
-                        price:
-                            total
+                        discountCode:
+                            discountCode
 
                     })
-
                 }
             );
 
+        if(!result.response.ok){
 
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok ||
-            !data.success
-        ){
-
-            throw new Error(
-                data.message ||
-                "Không tạo được đơn"
+            alert(
+                result.data.message ||
+                "Thanh toán thất bại."
             );
 
+            return;
+
         }
-
-
-        localStorage.setItem(
-            "thang36_last_order",
-            JSON.stringify(
-                data.order
-            )
-        );
-
 
         cart = [];
 
         discountApplied = false;
-
 
         document
             .getElementById(
@@ -1671,24 +2528,37 @@ async function checkout(){
             )
             .value = "";
 
+        document
+            .getElementById(
+                "discountMessage"
+            )
+            .innerText = "";
+
+        if(currentUser){
+
+            currentUser.balance =
+                result.data.balance;
+
+        }
+
+        updateAccountUI();
 
         updateCart();
 
         closeCart();
 
-
         showSuccess(
-            data.order.id
+            result.data.order.id
         );
 
+        loadHistory();
 
     }catch(error){
 
         console.error(error);
 
         alert(
-            "Không thể tạo đơn hàng. " +
-            "Vui lòng thử lại."
+            "Không kết nối được server."
         );
 
     }finally{
@@ -1703,34 +2573,115 @@ async function checkout(){
 }
 
 
-/* =========================
+/* =====================================================
+   HISTORY
+===================================================== */
+
+async function loadHistory(){
+
+    const box =
+        document.getElementById(
+            "historyContent"
+        );
+
+    if(!currentUser){
+
+        box.innerHTML =
+            "Đăng nhập để xem lịch sử đơn hàng.";
+
+        return;
+
+    }
+
+    box.innerHTML =
+        "⏳ Đang tải...";
+
+    try{
+
+        const result =
+            await api(
+                "/api/my-orders"
+            );
+
+        if(!result.response.ok){
+
+            box.innerHTML =
+                `<div class="error">
+                Không tải được lịch sử.
+                </div>`;
+
+            return;
+
+        }
+
+        const orders =
+            result.data.orders || [];
+
+        if(orders.length === 0){
+
+            box.innerHTML =
+                `<p style="color:#8993a5">
+                Bạn chưa có đơn hàng nào.
+                </p>`;
+
+            return;
+
+        }
+
+        let html = "";
+
+        orders.forEach(order => {
+
+            html += `
+                <div class="history-item">
+
+                    <strong>
+                        ${escapeHTML(order.id)}
+                    </strong>
+
+                    <p style="margin-top:8px;color:#b8c3d3">
+                        📦 ${escapeHTML(order.product)}
+                    </p>
+
+                    <p style="margin-top:5px;color:#45ff88">
+                        💰 ${Number(order.price).toLocaleString("vi-VN")}đ
+                    </p>
+
+                    <div class="status">
+                        ${escapeHTML(order.status)}
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+        box.innerHTML = html;
+
+    }catch{
+
+        box.innerHTML =
+            `<div class="error">
+            Không kết nối được server.
+            </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
    SUCCESS
-========================= */
+===================================================== */
 
 function showSuccess(orderId){
 
-    const result =
-        document
-            .getElementById(
-                "successOrder"
-            );
-
-    const id =
-        document
-            .getElementById(
-                "successOrderId"
-            );
-
-    if(orderId){
-
-        id.innerText =
-            orderId;
-
-        result.classList.add(
-            "show"
-        );
-
-    }
+    document
+        .getElementById(
+            "successOrderId"
+        )
+        .innerText =
+        orderId;
 
     document
         .getElementById(
@@ -1740,7 +2691,6 @@ function showSuccess(orderId){
         .add("show");
 
 }
-
 
 function closeSuccess(){
 
@@ -1754,9 +2704,9 @@ function closeSuccess(){
 }
 
 
-/* =========================
-   BẢO VỆ HIỂN THỊ TÊN
-========================= */
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function escapeHTML(text){
 
@@ -1770,11 +2720,13 @@ function escapeHTML(text){
 }
 
 
-/* =========================
-   KHỞI TẠO
-========================= */
+/* =====================================================
+   INIT
+===================================================== */
 
 updateCart();
+
+loadMe();
 
 </script>
 
