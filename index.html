@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THANG36 | GENPLAY SHOP</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#070a10;
+    color:white;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(7,10,16,.97);
+    border-bottom:1px solid #202938;
+}
+
+.nav{
+    max-width:1200px;
+    margin:auto;
+    padding:14px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+}
+
+.logo span{
+    color:#45ff88;
+}
+
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+nav button{
+    border:0;
+    border-radius:9px;
+    padding:10px 14px;
+    background:#151b26;
+    color:white;
+    cursor:pointer;
+}
+
+nav button:hover{
+    background:#45ff88;
+    color:#061009;
+}
+
+.cart-button{
+    background:#45ff88 !important;
+    color:#061009 !important;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+/* HERO */
+
+.hero{
+    max-width:1200px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.hero-box{
+    min-height:520px;
+    border-radius:25px;
+    overflow:hidden;
+    border:1px solid #283344;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:center;
+    gap:30px;
+    padding:50px;
+
+    background:
+    linear-gradient(
+        90deg,
+        rgba(5,8,14,.97),
+        rgba(5,8,14,.65)
+    ),
+    url("https://play-lh.googleusercontent.com/Px393UXgdcfM8LySdsZyJ41rDhSBgN2_YOhDOsekW18-5Huv5-lBKlrTDJZwLOT0DTMPCdGWnOUJ4Alj6sLZfn0=w526-h296-rw");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.hero h1{
+    font-size:50px;
+    line-height:1.1;
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    color:#45ff88;
+}
+
+.hero p{
+    color:#b2bdcd;
+    font-size:17px;
+    line-height:1.7;
+}
+
+.hero-image img{
+    width:100%;
+    max-width:500px;
+    border-radius:20px;
+}
+
+/* BOX */
+
+.box{
+    background:#10151e;
+    border:1px solid #252f3f;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:40px;
+}
+
+.box p{
+    color:#aeb8c8;
+    line-height:1.7;
+    margin-top:8px;
+}
+
+.title{
+    font-size:30px;
+    margin-bottom:20px;
+}
+
+.title span{
+    color:#45ff88;
+}
+
+/* TOPUP */
+
+.topup-tabs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.topup-tabs button{
+    padding:11px 18px;
+    border:1px solid #293445;
+    background:#151b26;
+    color:white;
+    border-radius:9px;
+    cursor:pointer;
+}
+
+.topup-tabs button.active{
+    background:#45ff88;
+    color:#061009;
+}
+
+.topup-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:15px;
+}
+
+.topup-card{
+    background:#10151e;
+    border:1px solid #252f3f;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.topup-card:hover{
+    border-color:#45ff88;
+}
+
+.topup-card.active{
+    border:2px solid #45ff88;
+}
+
+.receive{
+    color:#45ff88;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.input{
+    width:100%;
+    padding:13px;
+    margin-top:8px;
+    border-radius:9px;
+    border:1px solid #303b4e;
+    background:#161d29;
+    color:white;
+    outline:none;
+}
+
+.input:focus{
+    border-color:#45ff88;
+}
+
+/* PRODUCTS */
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:#10151e;
+    border:1px solid #252f3f;
+    border-radius:18px;
+    overflow:hidden;
+    transition:.25s;
+}
+
+.product:hover{
+    transform:translateY(-5px);
+    border-color:#45ff88;
+}
+
+.product img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.product-info{
+    padding:20px;
+}
+
+.product-info p{
+    color:#8e99aa;
+    margin:8px 0 15px;
+}
+
+.price{
+    color:#45ff88;
+    font-size:24px;
+    font-weight:900;
+}
+
+.buy,
+.confirm,
+.checkout{
+    width:100%;
+    padding:13px;
+    margin-top:15px;
+    border:0;
+    border-radius:9px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.buy:hover,
+.confirm:hover,
+.checkout:hover{
+    background:#69ffa0;
+}
+
+/* SUPPORT */
+
+.support{
+    text-align:center;
+}
+
+.support-buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.support-btn{
+    width:260px;
+    padding:14px;
+    border:0;
+    border-radius:10px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* CART */
+
+.cart{
+    position:fixed;
+    top:0;
+    right:-430px;
+    z-index:3000;
+    width:400px;
+    max-width:92%;
+    height:100%;
+    background:#0d121a;
+    border-left:1px solid #293445;
+    padding:25px;
+    transition:.3s;
+    overflow:auto;
+}
+
+.cart.open{
+    right:0;
+}
+
+.cart-item{
+    background:#161d29;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:10px;
+}
+
+.cart-item-price{
+    color:#45ff88;
+    margin-top:6px;
+}
+
+.remove{
+    margin-top:8px;
+    background:#ff5555;
+    color:white;
+    border:0;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.discount-box{
+    margin-top:20px;
+    padding:15px;
+    background:#111822;
+    border:1px solid #293445;
+    border-radius:12px;
+}
+
+.discount-input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #303b4e;
+    background:#161d29;
+    color:white;
+    outline:none;
+}
+
+.discount-apply{
+    width:100%;
+    padding:11px;
+    margin-top:8px;
+    border:0;
+    border-radius:8px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#discountMessage{
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.cart-total{
+    border-top:1px solid #30394a;
+    padding-top:20px;
+    margin-top:20px;
+    line-height:2;
+}
+
+.cart-total strong{
+    color:#45ff88;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:15px;
+    width:35px;
+    height:35px;
+    border:0;
+    border-radius:50%;
+    background:#202938;
+    color:white;
+    cursor:pointer;
+    font-size:20px;
+}
+
+/* SUCCESS POPUP */
+
+.success-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:rgba(0,0,0,.78);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.success-overlay.show{
+    display:flex;
+}
+
+.success-box{
+    width:100%;
+    max-width:500px;
+    background:#101820;
+    border:2px solid #45ff88;
+    border-radius:25px;
+    padding:40px 30px;
+    text-align:center;
+    box-shadow:0 0 50px rgba(69,255,136,.25);
+    animation:popup .25s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.success-icon{
+    font-size:60px;
+    margin-bottom:15px;
+}
+
+.success-box h2{
+    color:#45ff88;
+    font-size:30px;
+    margin-bottom:15px;
+}
+
+.success-box p{
+    color:#c4cedc;
+    font-size:18px;
+    line-height:1.8;
+}
+
+.success-box .luck{
+    color:#ffd75a;
+    font-size:21px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.success-close{
+    margin-top:25px;
+    padding:13px 35px;
+    border:0;
+    border-radius:10px;
+    background:#45ff88;
+    color:#061009;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+footer{
+    text-align:center;
+    border-top:1px solid #202938;
+    padding:30px;
+    margin-top:40px;
+    color:#6f7a8d;
+}
+
+@media(max-width:800px){
+
+    .nav{
+        flex-direction:column;
+    }
+
+    .hero-box{
+        grid-template-columns:1fr;
+        padding:30px;
+    }
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .hero-image{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="nav">
+
+<div class="logo">
+THANG<span>36</span>
+</div>
+
+<nav>
+
+<button onclick="go('home')">
+Trang chủ
+</button>
+
+<button onclick="go('topup')">
+Nạp thẻ
+</button>
+
+<button onclick="go('products')">
+Mua hàng
+</button>
+
+<button
+class="cart-button"
+onclick="openCart()">
+
+🛒 Giỏ hàng
+(<span id="cartCount">0</span>)
+
+</button>
+
+</nav>
+</div>
+</header>
+
+
+<section class="hero" id="home">
+
+<div class="hero-box">
+
+<div>
+
+<h1>
+CHÀO MỪNG ĐẾN VỚI
+<span>THANG36</span>
+</h1>
+
+<p>
+Hello mấy thằng em 😎
+<br><br>
+
+Chào mừng đến với web tụi anh.
+<br>
+
+Web uy tín, giá dễ tiếp cận.
+<br><br>
+
+🔥 Code 1 ngày<br>
+🔥 Code 1 tuần<br>
+🔥 Code 1 tháng
+</p>
+
+</div>
+
+<div class="hero-image">
+
+<img
+src="https://play-lh.googleusercontent.com/Px393UXgdcfM8LySdsZyJ41rDhSBgN2_YOhDOsekW18-5Huv5-lBKlrTDJZwLOT0DTMPCdGWnOUJ4Alj6sLZfn0=w526-h296-rw"
+alt="GenPlay">
+
+</div>
+
+</div>
+</section>
+
+
+<section class="container">
+
+<div class="box">
+
+<h2>📜 ĐIỀU KHOẢN</h2>
+
+<p>
+Hello mấy thằng em, chào mừng đến với web tụi anh.
+</p>
+
+<p>
+Web uy tín, giá rẻ, dễ sử dụng.
+</p>
+
+<p>
+Shop còn nhỏ nên hiện tại chỉ bán những sản phẩm đang có.
+</p>
+
+<p>
+Vui lòng đợi shop cập nhật thêm sản phẩm.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="container" id="topup">
+
+<h2 class="title">
+💳 NẠP <span>THẺ</span>
+</h2>
+
+<div class="box">
+
+<div class="topup-tabs">
+
+<button
+class="active"
+onclick="changeNetwork('Viettel',this)">
+Viettel
+</button>
+
+<button
+onclick="changeNetwork('VinaPhone',this)">
+VinaPhone
+</button>
+
+<button
+onclick="changeNetwork('MobiFone',this)">
+MobiFone
+</button>
+
+</div>
+
+<h3 id="networkTitle">
+Thẻ Viettel
+</h3>
+
+<br>
+
+<p style="color:#aeb8c8;">
+⚠️ Phí nạp 18% — nhận 82% mệnh giá.
+</p>
+
+<br>
+
+<div class="topup-grid">
+
+<div class="topup-card"
+onclick="selectCard(10000,this)">
+<h3>10.000đ</h3>
+<div class="receive">Nhận 8.200đ</div>
+</div>
+
+<div class="topup-card"
+onclick="selectCard(20000,this)">
+<h3>20.000đ</h3>
+<div class="receive">Nhận 16.400đ</div>
+</div>
+
+<div class="topup-card"
+onclick="selectCard(50000,this)">
+<h3>50.000đ</h3>
+<div class="receive">Nhận 41.000đ</div>
+</div>
+
+<div class="topup-card"
+onclick="selectCard(100000,this)">
+<h3>100.000đ</h3>
+<div class="receive">Nhận 82.000đ</div>
+</div>
+
+<div class="topup-card"
+onclick="selectCard(200000,this)">
+<h3>200.000đ</h3>
+<div class="receive">Nhận 164.000đ</div>
+</div>
+
+</div>
+
+<br>
+
+<div id="cardForm" style="display:none;">
+
+<h3>📝 THÔNG TIN THẺ</h3>
+
+<br>
+
+<label>Mã thẻ</label>
+
+<input
+id="cardCode"
+class="input"
+type="text"
+placeholder="Nhập mã thẻ">
+
+<br><br>
+
+<label>Serial</label>
+
+<input
+id="cardSerial"
+class="input"
+type="text"
+placeholder="Nhập serial">
+
+<p
+id="selectedInfo"
+style="
+color:#45ff88;
+margin-top:15px;
+font-weight:bold;
+">
+</p>
+
+<button
+class="confirm"
+onclick="submitCard()">
+
+XÁC NHẬN THANH TOÁN
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container" id="products">
+
+<h2 class="title">
+🛒 MUA <span>HÀNG</span>
+</h2>
+
+<div class="products">
+
+<div class="product">
+
+<img
+src="https://lh3.googleusercontent.com/sac5Sw6F2p6-_EX0fkU3wCaUqrKBUhIPCk07u0xUi3eU2sLjyJtJwNjeG5eS1HWIkY_gear1sZqJ0-cf0Yq01g"
+alt="GenPlay">
+
+<div class="product-info">
+
+<h3>GenPlay 1 Ngày</h3>
+
+<p>Code sử dụng 1 ngày</p>
+
+<div class="price">13.000đ</div>
+
+<button
+class="buy"
+onclick="addCart('GenPlay 1 Ngày',13000)">
+
+🛒 Thêm vào giỏ
+
+</button>
+
+</div>
+</div>
+
+
+<div class="product">
+
+<img
+src="https://lh3.googleusercontent.com/sac5Sw6F2p6-_EX0fkU3wCaUqrKBUhIPCk07u0xUi3eU2sLjyJtJwNjeG5eS1HWIkY_gear1sZqJ0-cf0Yq01g"
+alt="GenPlay">
+
+<div class="product-info">
+
+<h3>GenPlay 1 Tuần</h3>
+
+<p>Code sử dụng 1 tuần</p>
+
+<div class="price">49.000đ</div>
+
+<button
+class="buy"
+onclick="addCart('GenPlay 1 Tuần',49000)">
+
+🛒 Thêm vào giỏ
+
+</button>
+
+</div>
+</div>
+
+
+<div class="product">
+
+<img
+src="https://lh3.googleusercontent.com/sac5Sw6F2p6-_EX0fkU3wCaUqrKBUhIPCk07u0xUi3eU2sLjyJtJwNjeG5eS1HWIkY_gear1sZqJ0-cf0Yq01g"
+alt="GenPlay">
+
+<div class="product-info">
+
+<h3>GenPlay 1 Tháng</h3>
+
+<p>Code sử dụng 1 tháng</p>
+
+<div class="price">120.000đ</div>
+
+<button
+class="buy"
+onclick="addCart('GenPlay 1 Tháng',120000)">
+
+🛒 Thêm vào giỏ
+
+</button>
+
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<div class="box">
+
+<h2>⚡ SHOP ĐANG CẬP NHẬT</h2>
+
+<p>
+Do shop còn nhỏ nên hiện tại chỉ bán một số code GenPlay.
+</p>
+
+<p>
+Vui lòng đợi shop cập nhật thêm sản phẩm.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<div class="box support">
+
+<h2>💬 HỖ TRỢ & LIÊN HỆ</h2>
+
+<p>
+Vào Discord nhận mã giảm giá 10%.
+</p>
+
+<div class="support-buttons">
+
+<button
+class="support-btn"
+onclick="openDiscord()">
+💬 Discord
+</button>
+
+<button
+class="support-btn"
+onclick="openTikTok()">
+🎵 TikTok THANG36
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+THANG36 SHOP © 2026
+<br>
+GENPLAY CODE STORE
+</footer>
+
+
+<!-- CART -->
+
+<div class="cart" id="cart">
+
+<button
+class="close"
+onclick="closeCart()">
+×
+</button>
+
+<h2>🛒 GIỎ HÀNG</h2>
+
+<div id="cartItems">
+
+<p style="color:#8993a5;">
+Chưa có sản phẩm.
+</p>
+
+</div>
+
+
+<div class="discount-box">
+
+<h3>🎁 MÃ GIẢM GIÁ</h3>
+
+<p style="color:#8993a5;margin-top:5px;">
+Nhập mã để giảm 10%.
+</p>
+
+<input
+id="discountCode"
+class="discount-input"
+placeholder="Nhập mã giảm giá..."
+autocomplete="off">
+
+<button
+class="discount-apply"
+onclick="applyDiscount()">
+
+ÁP DỤNG
+
+</button>
+
+<p id="discountMessage"></p>
+
+</div>
+
+
+<div class="cart-total">
+
+<div>
+Tạm tính:
+<strong id="cartSubtotal">0đ</strong>
+</div>
+
+<div>
+Giảm giá:
+<strong id="cartDiscount">0đ</strong>
+</div>
+
+<div>
+THÀNH TIỀN:
+<strong id="cartTotal">0đ</strong>
+</div>
+
+</div>
+
+<button
+class="checkout"
+onclick="checkout()">
+
+XÁC NHẬN THANH TOÁN
+
+</button>
+
+</div>
+
+
+<!-- SUCCESS POPUP -->
+
+<div
+class="success-overlay"
+id="successOverlay">
+
+<div class="success-box">
+
+<div class="success-icon">
+🎉
+</div>
+
+<h2>
+CẢM ƠN BẠN ĐÃ MUA HÀNG!
+</h2>
+
+<p>
+Đơn hàng của bạn đã được ghi nhận.
+</p>
+
+<p class="luck">
+🍀 Chúc thằng em 8386 may mắn<br>
+✨ Vạn sự như ý!
+</p>
+
+<button
+class="success-close"
+onclick="closeSuccess()">
+
+ĐÓNG
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const DISCORD =
+"https://discord.gg/5N876FHRz";
+
+const TIKTOK =
+"https://www.tiktok.com/@thang_213zey?is_from_webapp=1&sender_device=pc";
+
+const DISCOUNT_CODE =
+"thang36vipvailon";
+
+let discountApplied = false;
+
+let cart = [];
+
+let selectedNetwork = "Viettel";
+
+let selectedAmount = 0;
+
+
+function go(id){
+
+    document
+    .getElementById(id)
+    .scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+function openDiscord(){
+
+    window.open(
+        DISCORD,
+        "_blank"
+    );
+
+}
+
+
+function openTikTok(){
+
+    window.open(
+        TIKTOK,
+        "_blank"
+    );
+
+}
+
+
+function changeNetwork(
+    network,
+    button
+){
+
+    selectedNetwork = network;
+
+    document
+    .getElementById("networkTitle")
+    .innerText =
+    "Thẻ " + network;
+
+    document
+    .querySelectorAll(
+        ".topup-tabs button"
+    )
+    .forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+}
+
+
+function selectCard(
+    amount,
+    element
+){
+
+    selectedAmount = amount;
+
+    document
+    .querySelectorAll(
+        ".topup-card"
+    )
+    .forEach(card=>{
+        card.classList.remove("active");
+    });
+
+    element.classList.add("active");
+
+    const receive =
+    Math.round(amount * 0.82);
+
+    document
+    .getElementById("cardForm")
+    .style.display = "block";
+
+    document
+    .getElementById("selectedInfo")
+    .innerText =
+    selectedNetwork +
+    " " +
+    amount.toLocaleString("vi-VN") +
+    "đ → nhận " +
+    receive.toLocaleString("vi-VN") +
+    "đ";
+
+}
+
+
+function submitCard(){
+
+    const code =
+    document
+    .getElementById("cardCode")
+    .value
+    .trim();
+
+    const serial =
+    document
+    .getElementById("cardSerial")
+    .value
+    .trim();
+
+    if(selectedAmount === 0){
+
+        alert(
+            "Vui lòng chọn mệnh giá thẻ!"
+        );
+
+        return;
+    }
+
+    if(code === "" || serial === ""){
+
+        alert(
+            "Vui lòng nhập đầy đủ mã thẻ và serial!"
+        );
+
+        return;
+    }
+
+    showSuccess();
+
+}
+
+
+function addCart(
+    name,
+    price
+){
+
+    cart.push({
+        name:name,
+        price:price
+    });
+
+    updateCart();
+
+    openCart();
+
+}
+
+
+function applyDiscount(){
+
+    const input =
+    document
+    .getElementById("discountCode")
+    .value
+    .trim();
+
+    const message =
+    document
+    .getElementById("discountMessage");
+
+    if(
+        input.toLowerCase() ===
+        DISCOUNT_CODE.toLowerCase()
+    ){
+
+        discountApplied = true;
+
+        message.innerText =
+        "✅ Áp dụng thành công! Giảm 10%.";
+
+        message.style.color =
+        "#45ff88";
+
+    }else{
+
+        discountApplied = false;
+
+        message.innerText =
+        "❌ Mã giảm giá không đúng.";
+
+        message.style.color =
+        "#ff5555";
+
+    }
+
+    updateCart();
+
+}
+
+
+function updateCart(){
+
+    document
+    .getElementById("cartCount")
+    .innerText =
+    cart.length;
+
+    const box =
+    document
+    .getElementById("cartItems");
+
+    let subtotal = 0;
+
+    cart.forEach(item=>{
+        subtotal += item.price;
+    });
+
+    let discount = 0;
+
+    if(
+        discountApplied &&
+        subtotal > 0
+    ){
+
+        discount =
+        Math.round(
+            subtotal * 0.10
+        );
+
+    }
+
+    const total =
+    subtotal - discount;
+
+    if(cart.length === 0){
+
+        box.innerHTML =
+        `<p style="color:#8993a5;">
+        Chưa có sản phẩm.
+        </p>`;
+
+    }else{
+
+        let html = "";
+
+        cart.forEach(
+        (item,index)=>{
+
+            html += `
+            <div class="cart-item">
+
+                <strong>
+                ${item.name}
+                </strong>
+
+                <div class="cart-item-price">
+                ${item.price.toLocaleString("vi-VN")}đ
+                </div>
+
+                <button
+                class="remove"
+                onclick="removeCart(${index})">
+                Xóa
+                </button>
+
+            </div>
+            `;
+
+        });
+
+        box.innerHTML = html;
+    }
+
+    document
+    .getElementById("cartSubtotal")
+    .innerText =
+    subtotal.toLocaleString("vi-VN")
+    + "đ";
+
+    document
+    .getElementById("cartDiscount")
+    .innerText =
+    "-" +
+    discount.toLocaleString("vi-VN")
+    + "đ";
+
+    document
+    .getElementById("cartTotal")
+    .innerText =
+    total.toLocaleString("vi-VN")
+    + "đ";
+
+}
+
+
+function removeCart(index){
+
+    cart.splice(index,1);
+
+    updateCart();
+
+}
+
+
+function openCart(){
+
+    document
+    .getElementById("cart")
+    .classList
+    .add("open");
+
+}
+
+
+function closeCart(){
+
+    document
+    .getElementById("cart")
+    .classList
+    .remove("open");
+
+}
+
+
+/* THANH TOÁN */
+
+function checkout(){
+
+    if(cart.length === 0){
+
+        alert(
+            "Giỏ hàng đang trống!"
+        );
+
+        return;
+    }
+
+    showSuccess();
+
+}
+
+
+/* POPUP */
+
+function showSuccess(){
+
+    document
+    .getElementById("successOverlay")
+    .classList
+    .add("show");
+
+}
+
+
+function closeSuccess(){
+
+    document
+    .getElementById("successOverlay")
+    .classList
+    .remove("show");
+
+}
+
+</script>
+
+</body>
+</html>
