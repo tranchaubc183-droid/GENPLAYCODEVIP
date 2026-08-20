@@ -32,24 +32,84 @@ function makeOrderId() {
     String(orders.length + 1).padStart(4, "0");
 }
 
-/* Trang kiểm tra server */
+/* =========================
+   DISCORD
+========================= */
+
+async function sendDiscord(message) {
+
+  const webhook = process.env.DISCORD_WEBHOOK;
+
+  if (!webhook) {
+    console.log("Chưa cấu hình DISCORD_WEBHOOK");
+    return;
+  }
+
+  try {
+
+    const response = await fetch(webhook, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        content: message
+      })
+    });
+
+    if (!response.ok) {
+      console.log(
+        "Discord lỗi:",
+        response.status
+      );
+    }
+
+  } catch (error) {
+
+    console.log(
+      "Discord error:",
+      error.message
+    );
+
+  }
+}
+
+
+/* =========================
+   TRANG KIỂM TRA
+========================= */
 
 app.get("/", (req, res) => {
-  res.send("THANG36 SHOP BACKEND OK");
+
+  res.send(
+    "THANG36 SHOP BACKEND OK"
+  );
+
 });
 
-/* Kiểm tra API */
+
+/* =========================
+   TEST API
+========================= */
 
 app.get("/api/test", (req, res) => {
+
   res.json({
     success: true,
-    message: "THANG36 backend đang hoạt động!"
+    message:
+      "THANG36 backend đang hoạt động!"
   });
+
 });
 
-/* Tạo đơn hàng */
 
-app.post("/api/orders", (req, res) => {
+/* =========================
+   TẠO ĐƠN
+========================= */
+
+app.post("/api/orders", async (req, res) => {
 
   const {
     product,
@@ -57,33 +117,71 @@ app.post("/api/orders", (req, res) => {
   } = req.body;
 
   if (!product || !price) {
+
     return res.status(400).json({
+
       success: false,
-      message: "Thiếu sản phẩm hoặc giá"
+
+      message:
+        "Thiếu sản phẩm hoặc giá"
+
     });
+
   }
 
   const orders = getOrders();
 
   const order = {
+
     id: makeOrderId(),
+
     product: product,
+
     price: Number(price),
+
     status: "pending",
-    createdAt: new Date().toISOString()
+
+    createdAt:
+      new Date().toISOString()
+
   };
 
   orders.push(order);
 
   saveOrders(orders);
 
+
+  /* Discord thông báo đơn mới */
+
+  await sendDiscord(
+
+`🛒 **ĐƠN HÀNG MỚI**
+
+📌 Mã đơn: **${order.id}**
+
+📦 Sản phẩm: **${order.product}**
+
+💰 Giá: **${order.price.toLocaleString("vi-VN")}đ**
+
+⏳ Trạng thái: **CHỜ DUYỆT**`
+
+  );
+
+
   res.json({
+
     success: true,
+
     order: order
+
   });
+
 });
 
-/* Xem danh sách đơn */
+
+/* =========================
+   XEM ĐƠN
+========================= */
 
 app.get("/api/orders", (req, res) => {
 
@@ -91,68 +189,139 @@ app.get("/api/orders", (req, res) => {
 
 });
 
-/* Duyệt đơn */
 
-app.post("/api/orders/:id/approve", (req, res) => {
+/* =========================
+   DUYỆT ĐƠN
+========================= */
 
-  const orders = getOrders();
+app.post(
+  "/api/orders/:id/approve",
+  async (req, res) => {
 
-  const order = orders.find(
-    item => item.id === req.params.id
-  );
+    const orders = getOrders();
 
-  if (!order) {
-    return res.status(404).json({
-      success: false,
-      message: "Không tìm thấy đơn"
+    const order = orders.find(
+      item =>
+        item.id === req.params.id
+    );
+
+    if (!order) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message:
+          "Không tìm thấy đơn"
+
+      });
+
+    }
+
+
+    order.status = "approved";
+
+    order.approvedAt =
+      new Date().toISOString();
+
+    saveOrders(orders);
+
+
+    /* Discord báo đã duyệt */
+
+    await sendDiscord(
+
+`✅ **ĐƠN ${order.id} ĐÃ DUYỆT**
+
+📦 Sản phẩm: **${order.product}**
+
+💰 Giá: **${order.price.toLocaleString("vi-VN")}đ**
+
+🟢 Trạng thái: **ĐÃ DUYỆT**`
+
+    );
+
+
+    res.json({
+
+      success: true,
+
+      order: order
+
     });
+
   }
+);
 
-  order.status = "approved";
 
-  order.approvedAt =
-    new Date().toISOString();
+/* =========================
+   TỪ CHỐI ĐƠN
+========================= */
 
-  saveOrders(orders);
+app.post(
+  "/api/orders/:id/reject",
+  async (req, res) => {
 
-  res.json({
-    success: true,
-    order: order
-  });
-});
+    const orders = getOrders();
 
-/* Từ chối đơn */
+    const order = orders.find(
+      item =>
+        item.id === req.params.id
+    );
 
-app.post("/api/orders/:id/reject", (req, res) => {
+    if (!order) {
 
-  const orders = getOrders();
+      return res.status(404).json({
 
-  const order = orders.find(
-    item => item.id === req.params.id
-  );
+        success: false,
 
-  if (!order) {
-    return res.status(404).json({
-      success: false,
-      message: "Không tìm thấy đơn"
+        message:
+          "Không tìm thấy đơn"
+
+      });
+
+    }
+
+
+    order.status = "rejected";
+
+    order.rejectedAt =
+      new Date().toISOString();
+
+    saveOrders(orders);
+
+
+    await sendDiscord(
+
+`❌ **ĐƠN ${order.id} ĐÃ TỪ CHỐI**
+
+📦 Sản phẩm: **${order.product}**
+
+🔴 Trạng thái: **TỪ CHỐI**`
+
+    );
+
+
+    res.json({
+
+      success: true,
+
+      order: order
+
     });
+
   }
+);
 
-  order.status = "rejected";
 
-  order.rejectedAt =
-    new Date().toISOString();
-
-  saveOrders(orders);
-
-  res.json({
-    success: true,
-    order: order
-  });
-});
+/* =========================
+   START SERVER
+========================= */
 
 app.listen(PORT, () => {
+
   console.log(
     `THANG36 server running on port ${PORT}`
   );
+
 });
