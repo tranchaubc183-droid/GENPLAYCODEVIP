@@ -1,3 +1,4 @@
+```javascript
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -9,22 +10,17 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(__dirname));
 
-/* =====================================================
-   FILE DATABASE
-===================================================== */
+/* =========================
+   DATABASE FILES
+========================= */
 
-const DATA_DIR = __dirname;
+const USERS_FILE = path.join(__dirname, "users.json");
+const ORDERS_FILE = path.join(__dirname, "orders.json");
+const TOPUPS_FILE = path.join(__dirname, "topups.json");
 
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
-const TOPUPS_FILE = path.join(DATA_DIR, "topups.json");
-
-function ensureFile(file, defaultValue = []) {
+function ensureFile(file) {
     if (!fs.existsSync(file)) {
-        fs.writeFileSync(
-            file,
-            JSON.stringify(defaultValue, null, 2)
-        );
+        fs.writeFileSync(file, "[]", "utf8");
     }
 }
 
@@ -45,55 +41,27 @@ function readJSON(file) {
 function writeJSON(file, data) {
     fs.writeFileSync(
         file,
-        JSON.stringify(data, null, 2)
+        JSON.stringify(data, null, 2),
+        "utf8"
     );
 }
 
-/* =====================================================
-   DATABASE
-===================================================== */
-
-function getUsers() {
-    return readJSON(USERS_FILE);
-}
-
-function saveUsers(users) {
-    writeJSON(USERS_FILE, users);
-}
-
-function getOrders() {
-    return readJSON(ORDERS_FILE);
-}
-
-function saveOrders(orders) {
-    writeJSON(ORDERS_FILE, orders);
-}
-
-function getTopups() {
-    return readJSON(TOPUPS_FILE);
-}
-
-function saveTopups(topups) {
-    writeJSON(TOPUPS_FILE, topups);
-}
-
-/* =====================================================
+/* =========================
    CONFIG
-===================================================== */
+========================= */
+
+const ADMIN_KEY =
+    process.env.ADMIN_KEY || "THANG36_ADMIN_2026";
 
 const DISCOUNT_CODE =
     process.env.DISCOUNT_CODE || "thang36vipvailon";
-
-const ADMIN_KEY =
-    process.env.ADMIN_KEY || "CHANGE_THIS_ADMIN_KEY";
 
 const DISCORD_WEBHOOK =
     process.env.DISCORD_WEBHOOK || "";
 
 /*
-   Sản phẩm được server kiểm tra giá.
-   Không lấy giá từ frontend vì người dùng
-   có thể sửa giá bằng DevTools.
+   Giá sản phẩm được kiểm tra
+   ở SERVER, không tin giá từ HTML.
 */
 
 const PRODUCTS = {
@@ -102,100 +70,86 @@ const PRODUCTS = {
     "GenPlay 1 Tháng": 120000
 };
 
-/* =====================================================
-   PASSWORD HASH
-===================================================== */
+/* =========================
+   PASSWORD
+========================= */
 
 function hashPassword(password) {
-
     const salt =
         crypto.randomBytes(16).toString("hex");
 
     const hash =
-        crypto
-            .scryptSync(
-                password,
-                salt,
-                64
-            )
-            .toString("hex");
+        crypto.scryptSync(
+            password,
+            salt,
+            64
+        ).toString("hex");
 
     return `${salt}:${hash}`;
 }
 
 function verifyPassword(password, stored) {
-
     try {
+        const parts = stored.split(":");
 
-        const [salt, originalHash] =
-            stored.split(":");
+        if (parts.length !== 2) {
+            return false;
+        }
+
+        const salt = parts[0];
+        const originalHash = parts[1];
 
         const hash =
-            crypto
-                .scryptSync(
-                    password,
-                    salt,
-                    64
-                )
-                .toString("hex");
+            crypto.scryptSync(
+                password,
+                salt,
+                64
+            ).toString("hex");
 
         return crypto.timingSafeEqual(
             Buffer.from(hash, "hex"),
             Buffer.from(originalHash, "hex")
         );
-
     } catch {
-
         return false;
-
     }
 }
 
-/* =====================================================
-   TOKEN ĐĂNG NHẬP
-===================================================== */
+/* =========================
+   TOKEN
+========================= */
 
 function createToken() {
-
     return crypto
         .randomBytes(32)
         .toString("hex");
-
 }
-
-/*
-   Token được lưu trong users.json.
-   Với shop nhỏ/test thì đủ dùng.
-*/
 
 function findUserByToken(token) {
+    if (!token) return null;
 
-    if (!token) {
-        return null;
-    }
+    const users = readJSON(USERS_FILE);
 
-    const users = getUsers();
-
-    return users.find(
-        user => user.token === token
-    ) || null;
-
+    return (
+        users.find(
+            user => user.token === token
+        ) || null
+    );
 }
 
-function auth(req, res, next) {
+/* =========================
+   AUTH
+========================= */
 
+function auth(req, res, next) {
     const header =
         req.headers.authorization || "";
 
     if (!header.startsWith("Bearer ")) {
-
         return res.status(401).json({
-
             success: false,
             message: "Bạn chưa đăng nhập."
-
         });
-
     }
 
     const token =
@@ -205,72 +159,54 @@ function auth(req, res, next) {
         findUserByToken(token);
 
     if (!user) {
-
         return res.status(401).json({
-
             success: false,
-            message: "Phiên đăng nhập không hợp lệ."
-
+            message:
+                "Phiên đăng nhập không hợp lệ."
         });
-
     }
 
     req.user = user;
-
     next();
-
 }
 
-/* =====================================================
-   ADMIN
-===================================================== */
+/* =========================
+   ADMIN AUTH
+========================= */
 
 function adminAuth(req, res, next) {
-
     const key =
         req.headers["x-admin-key"];
 
-    if (
-        !key ||
-        key !== ADMIN_KEY
-    ) {
-
+    if (!key || key !== ADMIN_KEY) {
         return res.status(403).json({
-
             success: false,
-            message: "Không có quyền admin."
-
+            message: "Sai quyền admin."
         });
-
     }
 
     next();
-
 }
 
-/* =====================================================
+/* =========================
    DISCORD
-===================================================== */
+========================= */
 
 async function sendDiscord(message) {
-
     if (!DISCORD_WEBHOOK) {
         return;
     }
 
     try {
-
         const response =
             await fetch(
                 DISCORD_WEBHOOK,
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type":
                             "application/json"
                     },
-
                     body: JSON.stringify({
                         content: message
                     })
@@ -278,78 +214,61 @@ async function sendDiscord(message) {
             );
 
         if (!response.ok) {
-
             console.log(
                 "Discord lỗi:",
                 response.status
             );
-
         }
-
     } catch (error) {
-
         console.log(
             "Discord error:",
             error.message
         );
-
     }
-
 }
 
-/* =====================================================
+/* =========================
    ORDER ID
-===================================================== */
+========================= */
 
 function makeOrderId() {
-
     const orders =
-        getOrders();
+        readJSON(ORDERS_FILE);
 
     return (
         "TH36-" +
-        String(
-            orders.length + 1
-        ).padStart(4, "0")
+        String(orders.length + 1)
+            .padStart(4, "0")
     );
-
 }
 
-/* =====================================================
+/* =========================
    HOME
-===================================================== */
+========================= */
 
 app.get("/", (req, res) => {
-
     res.send(
         "THANG36 SHOP BACKEND OK"
     );
-
 });
 
-/* =====================================================
+/* =========================
    TEST
-===================================================== */
+========================= */
 
 app.get("/api/test", (req, res) => {
-
     res.json({
-
         success: true,
-
         message:
             "THANG36 backend đang hoạt động!"
-
     });
-
 });
 
-/* =====================================================
-   ĐĂNG KÝ
-===================================================== */
+/* =========================
+   REGISTER
+========================= */
 
 app.post("/api/register", (req, res) => {
-
     const {
         username,
         password
@@ -359,15 +278,11 @@ app.post("/api/register", (req, res) => {
         typeof username !== "string" ||
         typeof password !== "string"
     ) {
-
         return res.status(400).json({
-
             success: false,
             message:
-                "Thông tin đăng ký không hợp lệ."
-
+                "Thông tin không hợp lệ."
         });
-
     }
 
     const cleanUsername =
@@ -377,15 +292,11 @@ app.post("/api/register", (req, res) => {
         cleanUsername.length < 3 ||
         cleanUsername.length > 20
     ) {
-
         return res.status(400).json({
-
             success: false,
             message:
                 "Tên tài khoản phải từ 3-20 ký tự."
-
         });
-
     }
 
     if (
@@ -393,34 +304,26 @@ app.post("/api/register", (req, res) => {
             cleanUsername
         )
     ) {
-
         return res.status(400).json({
-
             success: false,
             message:
                 "Tên tài khoản chỉ được dùng chữ, số và _."
-
         });
-
     }
 
     if (
         password.length < 6 ||
         password.length > 100
     ) {
-
         return res.status(400).json({
-
             success: false,
             message:
                 "Mật khẩu phải từ 6 ký tự."
-
         });
-
     }
 
     const users =
-        getUsers();
+        readJSON(USERS_FILE);
 
     const exists =
         users.some(
@@ -430,75 +333,60 @@ app.post("/api/register", (req, res) => {
         );
 
     if (exists) {
-
         return res.status(409).json({
-
             success: false,
             message:
                 "Tên tài khoản đã tồn tại."
-
         });
-
     }
 
     const user = {
-
-        id:
-            crypto.randomUUID(),
-
-        username:
-            cleanUsername,
-
-        password:
-            hashPassword(password),
-
-        balance:
-            0,
-
-        token:
-            null,
-
+        id: crypto.randomUUID(),
+        username: cleanUsername,
+        password: hashPassword(password),
+        balance: 0,
+        token: null,
         createdAt:
             new Date().toISOString()
-
     };
 
     users.push(user);
 
-    saveUsers(users);
+    writeJSON(
+        USERS_FILE,
+        users
+    );
 
     res.json({
-
         success: true,
-
         message:
             "Đăng ký thành công."
-
     });
-
 });
 
-/* =====================================================
-   ĐĂNG NHẬP
-===================================================== */
+/* =========================
+   LOGIN
+========================= */
 
 app.post("/api/login", (req, res) => {
-
     const {
         username,
         password
     } = req.body;
 
     const users =
-        getUsers();
+        readJSON(USERS_FILE);
+
+    const cleanUsername =
+        String(username || "")
+            .trim()
+            .toLowerCase();
 
     const user =
         users.find(
             item =>
                 item.username.toLowerCase() ===
-                String(username || "")
-                    .trim()
-                    .toLowerCase()
+                cleanUsername
         );
 
     if (
@@ -508,137 +396,120 @@ app.post("/api/login", (req, res) => {
             user.password
         )
     ) {
-
         return res.status(401).json({
-
             success: false,
             message:
                 "Sai tài khoản hoặc mật khẩu."
-
         });
-
     }
 
     const token =
         createToken();
 
-    user.token =
-        token;
+    user.token = token;
 
-    saveUsers(users);
+    writeJSON(
+        USERS_FILE,
+        users
+    );
 
     res.json({
-
         success: true,
-
         token,
-
         user: {
-
             id: user.id,
-
-            username:
-                user.username,
-
-            balance:
-                user.balance
-
+            username: user.username,
+            balance: user.balance
         }
-
     });
-
 });
 
-/* =====================================================
-   ĐĂNG XUẤT
-===================================================== */
+/* =========================
+   LOGOUT
+========================= */
 
-app.post("/api/logout", auth, (req, res) => {
+app.post(
+    "/api/logout",
+    auth,
+    (req, res) => {
 
-    const users =
-        getUsers();
+        const users =
+            readJSON(USERS_FILE);
 
-    const user =
-        users.find(
-            item =>
-                item.id ===
-                req.user.id
+        const user =
+            users.find(
+                item =>
+                    item.id ===
+                    req.user.id
+            );
+
+        if (user) {
+            user.token = null;
+        }
+
+        writeJSON(
+            USERS_FILE,
+            users
         );
 
-    if (user) {
-
-        user.token = null;
-
-        saveUsers(users);
-
+        res.json({
+            success: true,
+            message:
+                "Đã đăng xuất."
+        });
     }
+);
 
-    res.json({
+/* =========================
+   ME
+========================= */
 
-        success: true,
-        message: "Đã đăng xuất."
+app.get(
+    "/api/me",
+    auth,
+    (req, res) => {
 
-    });
+        res.json({
+            success: true,
+            user: {
+                id: req.user.id,
+                username:
+                    req.user.username,
+                balance:
+                    req.user.balance,
+                createdAt:
+                    req.user.createdAt
+            }
+        });
+    }
+);
 
-});
+/* =========================
+   PRODUCTS
+========================= */
 
-/* =====================================================
-   THÔNG TIN TÀI KHOẢN
-===================================================== */
+app.get(
+    "/api/products",
+    (req, res) => {
 
-app.get("/api/me", auth, (req, res) => {
+        res.json({
+            success: true,
+            products:
+                Object.entries(
+                    PRODUCTS
+                ).map(
+                    ([name, price]) => ({
+                        name,
+                        price
+                    })
+                )
+        });
+    }
+);
 
-    res.json({
-
-        success: true,
-
-        user: {
-
-            id:
-                req.user.id,
-
-            username:
-                req.user.username,
-
-            balance:
-                req.user.balance,
-
-            createdAt:
-                req.user.createdAt
-
-        }
-
-    });
-
-});
-
-/* =====================================================
-   DANH SÁCH SẢN PHẨM
-===================================================== */
-
-app.get("/api/products", (req, res) => {
-
-    res.json({
-
-        success: true,
-
-        products:
-            Object.entries(
-                PRODUCTS
-            ).map(
-                ([name, price]) => ({
-                    name,
-                    price
-                })
-            )
-
-    });
-
-});
-
-/* =====================================================
-   TẠO ĐƠN + TRỪ SỐ DƯ
-===================================================== */
+/* =========================
+   CREATE ORDER
+========================= */
 
 app.post(
     "/api/orders",
@@ -654,23 +525,12 @@ app.post(
             typeof product !== "string" ||
             !product.trim()
         ) {
-
             return res.status(400).json({
-
                 success: false,
                 message:
                     "Thiếu sản phẩm."
-
             });
-
         }
-
-        /*
-           Frontend gửi:
-           "GenPlay 1 Ngày, GenPlay 1 Tuần"
-
-           Server tự tính lại giá.
-        */
 
         const productNames =
             product
@@ -683,67 +543,56 @@ app.post(
         if (
             productNames.length === 0
         ) {
-
             return res.status(400).json({
-
                 success: false,
                 message:
                     "Giỏ hàng trống."
-
             });
-
         }
 
         let subtotal = 0;
 
         for (
-            const productName
-            of productNames
+            const name of productNames
         ) {
 
             if (
                 !Object.prototype.hasOwnProperty.call(
                     PRODUCTS,
-                    productName
+                    name
                 )
             ) {
-
                 return res.status(400).json({
-
                     success: false,
-
                     message:
-                        `Sản phẩm không tồn tại: ${productName}`
-
+                        `Sản phẩm không tồn tại: ${name}`
                 });
-
             }
 
             subtotal +=
-                PRODUCTS[productName];
-
+                PRODUCTS[name];
         }
 
         let discount = 0;
 
         if (
             typeof discountCode === "string" &&
-            discountCode.trim().toLowerCase() ===
-            DISCOUNT_CODE.toLowerCase()
+            discountCode
+                .trim()
+                .toLowerCase() ===
+                DISCOUNT_CODE.toLowerCase()
         ) {
-
             discount =
                 Math.round(
                     subtotal * 0.10
                 );
-
         }
 
         const total =
             subtotal - discount;
 
         const users =
-            getUsers();
+            readJSON(USERS_FILE);
 
         const user =
             users.find(
@@ -753,88 +602,58 @@ app.post(
             );
 
         if (!user) {
-
             return res.status(401).json({
-
                 success: false,
                 message:
                     "Tài khoản không tồn tại."
-
             });
-
         }
 
-        /*
-           QUAN TRỌNG:
-           Kiểm tra số dư ở SERVER.
-        */
-
-        if (
-            user.balance < total
-        ) {
-
+        if (user.balance < total) {
             return res.status(400).json({
-
                 success: false,
-
                 message:
-                    `Số dư không đủ. Bạn cần ${total.toLocaleString("vi-VN")}đ.`,
-
+                    `Số dư không đủ. Cần ${total.toLocaleString("vi-VN")}đ.`,
                 balance:
                     user.balance,
-
                 required:
                     total
-
             });
-
         }
-
-        /*
-           Trừ tiền server-side.
-        */
 
         user.balance -= total;
 
         const orders =
-            getOrders();
+            readJSON(ORDERS_FILE);
 
         const order = {
-
-            id:
-                makeOrderId(),
-
-            userId:
-                user.id,
-
+            id: makeOrderId(),
+            userId: user.id,
             username:
                 user.username,
-
             product:
                 productNames.join(", "),
-
             subtotal,
-
             discount,
-
-            price:
-                total,
-
-            status:
-                "approved",
-
+            price: total,
+            status: "paid",
             createdAt:
                 new Date().toISOString()
-
         };
 
         orders.push(order);
 
-        saveUsers(users);
-        saveOrders(orders);
+        writeJSON(
+            USERS_FILE,
+            users
+        );
+
+        writeJSON(
+            ORDERS_FILE,
+            orders
+        );
 
         await sendDiscord(
-
 `🛒 **ĐƠN HÀNG MỚI**
 
 👤 Tài khoản: **${user.username}**
@@ -848,26 +667,20 @@ app.post(
 💳 Số dư còn lại: **${user.balance.toLocaleString("vi-VN")}đ**
 
 🟢 Trạng thái: **ĐÃ THANH TOÁN**`
-
         );
 
         res.json({
-
             success: true,
-
             order,
-
             balance:
                 user.balance
-
         });
-
     }
 );
 
-/* =====================================================
-   LỊCH SỬ ĐƠN CỦA USER
-===================================================== */
+/* =========================
+   MY ORDERS
+========================= */
 
 app.get(
     "/api/my-orders",
@@ -875,30 +688,25 @@ app.get(
     (req, res) => {
 
         const orders =
-            getOrders();
+            readJSON(ORDERS_FILE);
 
-        const myOrders =
+        const result =
             orders.filter(
                 order =>
                     order.userId ===
                     req.user.id
-            );
+            ).reverse();
 
         res.json({
-
             success: true,
-
-            orders:
-                myOrders.reverse()
-
+            orders: result
         });
-
     }
 );
 
-/* =====================================================
-   TẠO YÊU CẦU NẠP TIỀN
-===================================================== */
+/* =========================
+   CREATE TOPUP
+========================= */
 
 app.post(
     "/api/topups",
@@ -919,36 +727,27 @@ app.post(
             ) ||
             numericAmount <= 0
         ) {
-
             return res.status(400).json({
-
                 success: false,
                 message:
                     "Số tiền không hợp lệ."
-
             });
-
         }
 
         if (
             numericAmount > 5000000
         ) {
-
             return res.status(400).json({
-
                 success: false,
                 message:
                     "Số tiền nạp quá lớn."
-
             });
-
         }
 
         const topups =
-            getTopups();
+            readJSON(TOPUPS_FILE);
 
         const topup = {
-
             id:
                 "TOP-" +
                 crypto
@@ -966,22 +765,25 @@ app.post(
                 numericAmount,
 
             method:
-                String(method || "manual"),
+                String(
+                    method || "manual"
+                ),
 
             status:
                 "pending",
 
             createdAt:
                 new Date().toISOString()
-
         };
 
         topups.push(topup);
 
-        saveTopups(topups);
+        writeJSON(
+            TOPUPS_FILE,
+            topups
+        );
 
         await sendDiscord(
-
 `💰 **YÊU CẦU NẠP TIỀN**
 
 👤 Tài khoản: **${topup.username}**
@@ -993,23 +795,18 @@ app.post(
 💳 Phương thức: **${topup.method}**
 
 ⏳ Trạng thái: **CHỜ DUYỆT**`
-
         );
 
         res.json({
-
             success: true,
-
             topup
-
         });
-
     }
 );
 
-/* =====================================================
-   XEM YÊU CẦU NẠP CỦA USER
-===================================================== */
+/* =========================
+   MY TOPUPS
+========================= */
 
 app.get(
     "/api/my-topups",
@@ -1017,30 +814,27 @@ app.get(
     (req, res) => {
 
         const topups =
-            getTopups();
+            readJSON(TOPUPS_FILE);
 
         const result =
-            topups.filter(
-                item =>
-                    item.userId ===
-                    req.user.id
-            );
+            topups
+                .filter(
+                    item =>
+                        item.userId ===
+                        req.user.id
+                )
+                .reverse();
 
         res.json({
-
             success: true,
-
-            topups:
-                result.reverse()
-
+            topups: result
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: XEM USER
-===================================================== */
+/* =========================
+   ADMIN USERS
+========================= */
 
 app.get(
     "/api/admin/users",
@@ -1048,39 +842,29 @@ app.get(
     (req, res) => {
 
         const users =
-            getUsers();
+            readJSON(USERS_FILE);
 
         res.json({
-
             success: true,
-
             users:
                 users.map(
                     user => ({
-
-                        id:
-                            user.id,
-
+                        id: user.id,
                         username:
                             user.username,
-
                         balance:
                             user.balance,
-
                         createdAt:
                             user.createdAt
-
                     })
                 )
-
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: XEM ĐƠN
-===================================================== */
+/* =========================
+   ADMIN ORDERS
+========================= */
 
 app.get(
     "/api/admin/orders",
@@ -1088,20 +872,18 @@ app.get(
     (req, res) => {
 
         res.json({
-
             success: true,
-
             orders:
-                getOrders().reverse()
-
+                readJSON(
+                    ORDERS_FILE
+                ).reverse()
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: XEM NẠP TIỀN
-===================================================== */
+/* =========================
+   ADMIN TOPUPS
+========================= */
 
 app.get(
     "/api/admin/topups",
@@ -1109,20 +891,18 @@ app.get(
     (req, res) => {
 
         res.json({
-
             success: true,
-
             topups:
-                getTopups().reverse()
-
+                readJSON(
+                    TOPUPS_FILE
+                ).reverse()
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: CỘNG TIỀN
-===================================================== */
+/* =========================
+   ADMIN ADD BALANCE
+========================= */
 
 app.post(
     "/api/admin/users/:id/add-balance",
@@ -1136,20 +916,15 @@ app.post(
             !Number.isFinite(amount) ||
             amount <= 0
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "Số tiền không hợp lệ."
-
             });
-
         }
 
         const users =
-            getUsers();
+            readJSON(USERS_FILE);
 
         const user =
             users.find(
@@ -1159,24 +934,21 @@ app.post(
             );
 
         if (!user) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message:
                     "Không tìm thấy tài khoản."
-
             });
-
         }
 
         user.balance += amount;
 
-        saveUsers(users);
+        writeJSON(
+            USERS_FILE,
+            users
+        );
 
         await sendDiscord(
-
 `💰 **ADMIN CỘNG TIỀN**
 
 👤 Tài khoản: **${user.username}**
@@ -1184,27 +956,21 @@ app.post(
 ➕ Số tiền: **${amount.toLocaleString("vi-VN")}đ**
 
 💳 Số dư mới: **${user.balance.toLocaleString("vi-VN")}đ**`
-
         );
 
         res.json({
-
             success: true,
-
             username:
                 user.username,
-
             balance:
                 user.balance
-
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: TRỪ TIỀN
-===================================================== */
+/* =========================
+   ADMIN REMOVE BALANCE
+========================= */
 
 app.post(
     "/api/admin/users/:id/remove-balance",
@@ -1218,20 +984,15 @@ app.post(
             !Number.isFinite(amount) ||
             amount <= 0
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "Số tiền không hợp lệ."
-
             });
-
         }
 
         const users =
-            getUsers();
+            readJSON(USERS_FILE);
 
         const user =
             users.find(
@@ -1241,55 +1002,41 @@ app.post(
             );
 
         if (!user) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message:
                     "Không tìm thấy tài khoản."
-
             });
-
         }
 
-        if (
-            user.balance < amount
-        ) {
-
+        if (user.balance < amount) {
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "Số dư không đủ."
-
             });
-
         }
 
         user.balance -= amount;
 
-        saveUsers(users);
+        writeJSON(
+            USERS_FILE,
+            users
+        );
 
         res.json({
-
             success: true,
-
             username:
                 user.username,
-
             balance:
                 user.balance
-
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: DUYỆT NẠP TIỀN
-===================================================== */
+/* =========================
+   ADMIN APPROVE TOPUP
+========================= */
 
 app.post(
     "/api/admin/topups/:id/approve",
@@ -1297,7 +1044,7 @@ app.post(
     async (req, res) => {
 
         const topups =
-            getTopups();
+            readJSON(TOPUPS_FILE);
 
         const topup =
             topups.find(
@@ -1307,36 +1054,26 @@ app.post(
             );
 
         if (!topup) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message:
                     "Không tìm thấy yêu cầu nạp."
-
             });
-
         }
 
         if (
             topup.status !==
             "pending"
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
-                    "Yêu cầu này đã được xử lý."
-
+                    "Yêu cầu đã được xử lý."
             });
-
         }
 
         const users =
-            getUsers();
+            readJSON(USERS_FILE);
 
         const user =
             users.find(
@@ -1346,16 +1083,11 @@ app.post(
             );
 
         if (!user) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message:
                     "Không tìm thấy tài khoản."
-
             });
-
         }
 
         user.balance +=
@@ -1367,11 +1099,17 @@ app.post(
         topup.approvedAt =
             new Date().toISOString();
 
-        saveUsers(users);
-        saveTopups(topups);
+        writeJSON(
+            USERS_FILE,
+            users
+        );
+
+        writeJSON(
+            TOPUPS_FILE,
+            topups
+        );
 
         await sendDiscord(
-
 `✅ **NẠP TIỀN ĐÃ DUYỆT**
 
 👤 Tài khoản: **${user.username}**
@@ -1381,26 +1119,20 @@ app.post(
 💳 Số dư mới: **${user.balance.toLocaleString("vi-VN")}đ**
 
 📌 Mã: **${topup.id}**`
-
         );
 
         res.json({
-
             success: true,
-
             balance:
                 user.balance,
-
             topup
-
         });
-
     }
 );
 
-/* =====================================================
-   ADMIN: TỪ CHỐI NẠP
-===================================================== */
+/* =========================
+   ADMIN REJECT TOPUP
+========================= */
 
 app.post(
     "/api/admin/topups/:id/reject",
@@ -1408,7 +1140,7 @@ app.post(
     (req, res) => {
 
         const topups =
-            getTopups();
+            readJSON(TOPUPS_FILE);
 
         const topup =
             topups.find(
@@ -1418,32 +1150,22 @@ app.post(
             );
 
         if (!topup) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message:
                     "Không tìm thấy yêu cầu."
-
             });
-
         }
 
         if (
             topup.status !==
             "pending"
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     "Yêu cầu đã được xử lý."
-
             });
-
         }
 
         topup.status =
@@ -1452,27 +1174,29 @@ app.post(
         topup.rejectedAt =
             new Date().toISOString();
 
-        saveTopups(topups);
+        writeJSON(
+            TOPUPS_FILE,
+            topups
+        );
 
         res.json({
-
             success: true,
-
             topup
-
         });
-
     }
 );
 
-/* =====================================================
-   START
-===================================================== */
+/* =========================
+   START SERVER
+========================= */
 
 app.listen(PORT, () => {
-
     console.log(
         `THANG36 server running on port ${PORT}`
     );
 
+    console.log(
+        `Admin key hiện tại: ${ADMIN_KEY}`
+    );
 });
+```
