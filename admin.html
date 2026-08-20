@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>THANG36 | ADMIN</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#070a10;
+    color:white;
+}
+
+header{
+    background:#0d121a;
+    border-bottom:1px solid #293445;
+    padding:18px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.header{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+}
+
+.logo span{
+    color:#45ff88;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
+}
+
+.box{
+    background:#10151e;
+    border:1px solid #252f3f;
+    border-radius:16px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border-radius:8px;
+    border:1px solid #303b4e;
+    background:#161d29;
+    color:white;
+    outline:none;
+    margin-top:8px;
+}
+
+input:focus{
+    border-color:#45ff88;
+}
+
+button{
+    border:0;
+    border-radius:8px;
+    padding:11px 15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    background:#45ff88;
+    color:#061009;
+}
+
+.danger{
+    background:#ff5555;
+    color:white;
+}
+
+.dark{
+    background:#202938;
+    color:white;
+}
+
+button:hover{
+    opacity:.85;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:#151b26;
+    border:1px solid #293445;
+    border-radius:12px;
+    padding:18px;
+}
+
+.card p{
+    color:#aeb8c8;
+    margin-top:8px;
+}
+
+.green{
+    color:#45ff88;
+}
+
+.yellow{
+    color:#ffd75a;
+}
+
+.red{
+    color:#ff5555;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:15px;
+}
+
+.status{
+    display:inline-block;
+    margin-top:10px;
+    padding:5px 9px;
+    border-radius:6px;
+    background:#202938;
+}
+
+.hidden{
+    display:none;
+}
+
+.message{
+    margin-top:12px;
+    padding:12px;
+    border-radius:8px;
+    background:#151b26;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #293445;
+    text-align:left;
+}
+
+th{
+    color:#45ff88;
+}
+
+.table-wrap{
+    overflow:auto;
+}
+
+@media(max-width:700px){
+    .header{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .container{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="header">
+
+<div class="logo">
+THANG<span>36</span> ADMIN
+</div>
+
+<button
+class="dark"
+onclick="location.href='/'">
+
+← Về shop
+
+</button>
+
+</div>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- LOGIN ADMIN -->
+
+<div
+class="box"
+id="loginBox">
+
+<h2>🔐 ADMIN LOGIN</h2>
+
+<p style="color:#aeb8c8;">
+Nhập Admin Key để quản lý shop.
+</p>
+
+<input
+id="adminKey"
+type="password"
+placeholder="Nhập ADMIN_KEY">
+
+<br><br>
+
+<button
+class="primary"
+onclick="loginAdmin()">
+
+ĐĂNG NHẬP ADMIN
+
+</button>
+
+<div
+id="loginMessage"
+class="message hidden">
+</div>
+
+</div>
+
+
+<!-- ADMIN PANEL -->
+
+<div
+id="adminPanel"
+class="hidden">
+
+
+<!-- THỐNG KÊ -->
+
+<div class="box">
+
+<h2>📊 TỔNG QUAN</h2>
+
+<div
+class="grid"
+id="stats">
+
+<div class="card">
+<h3>👥 Tài khoản</h3>
+<p id="userCount">0</p>
+</div>
+
+<div class="card">
+<h3>💳 Yêu cầu nạp</h3>
+<p id="topupCount">0</p>
+</div>
+
+<div class="card">
+<h3>📦 Đơn hàng</h3>
+<p id="orderCount">0</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- NẠP TIỀN -->
+
+<div class="box">
+
+<h2>💰 DUYỆT NẠP TIỀN</h2>
+
+<div
+id="topups">
+
+<p style="color:#8993a5;">
+Đang tải...
+</p>
+
+</div>
+
+</div>
+
+
+<!-- USER -->
+
+<div class="box">
+
+<h2>👥 TÀI KHOẢN</h2>
+
+<div
+class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Tài khoản</th>
+<th>Số dư</th>
+<th>Ngày tạo</th>
+<th>Thao tác</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="users">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- ĐƠN HÀNG -->
+
+<div class="box">
+
+<h2>📦 ĐƠN HÀNG</h2>
+
+<div
+class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Mã</th>
+<th>Tài khoản</th>
+<th>Sản phẩm</th>
+<th>Giá</th>
+<th>Trạng thái</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="orders">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const API =
+window.location.origin;
+
+let ADMIN_KEY = "";
+
+let users = [];
+let topups = [];
+let orders = [];
+
+
+/* =========================
+   API
+========================= */
+
+async function api(
+    url,
+    options = {}
+){
+
+    options.headers = {
+
+        ...(options.headers || {}),
+
+        "X-Admin-Key":
+            ADMIN_KEY,
+
+        "Content-Type":
+            "application/json"
+
+    };
+
+    const response =
+        await fetch(
+            API + url,
+            options
+        );
+
+    let data;
+
+    try{
+
+        data =
+            await response.json();
+
+    }catch{
+
+        throw new Error(
+            "Server trả về dữ liệu không hợp lệ."
+        );
+
+    }
+
+    if(!response.ok){
+
+        throw new Error(
+            data.message ||
+            "API error"
+        );
+
+    }
+
+    return data;
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function loginAdmin(){
+
+    const key =
+        document
+            .getElementById("adminKey")
+            .value
+            .trim();
+
+    if(!key){
+
+        showLoginMessage(
+            "Vui lòng nhập Admin Key.",
+            false
+        );
+
+        return;
+
+    }
+
+    ADMIN_KEY = key;
+
+    try{
+
+        await loadAll();
+
+        document
+            .getElementById(
+                "loginBox"
+            )
+            .classList
+            .add("hidden");
+
+        document
+            .getElementById(
+                "adminPanel"
+            )
+            .classList
+            .remove("hidden");
+
+    }catch(error){
+
+        ADMIN_KEY = "";
+
+        showLoginMessage(
+            "❌ " + error.message,
+            false
+        );
+
+    }
+
+}
+
+
+function showLoginMessage(
+    text,
+    success
+){
+
+    const box =
+        document
+            .getElementById(
+                "loginMessage"
+            );
+
+    box.classList.remove(
+        "hidden"
+    );
+
+    box.innerText =
+        text;
+
+    box.style.color =
+        success
+            ? "#45ff88"
+            : "#ff5555";
+
+}
+
+
+/* =========================
+   LOAD ALL
+========================= */
+
+async function loadAll(){
+
+    const [
+        usersData,
+        topupsData,
+        ordersData
+    ] = await Promise.all([
+
+        api(
+            "/api/admin/users"
+        ),
+
+        api(
+            "/api/admin/topups"
+        ),
+
+        api(
+            "/api/admin/orders"
+        )
+
+    ]);
+
+    users =
+        usersData.users || [];
+
+    topups =
+        topupsData.topups || [];
+
+    orders =
+        ordersData.orders || [];
+
+    renderStats();
+    renderUsers();
+    renderTopups();
+    renderOrders();
+
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+function renderStats(){
+
+    document
+        .getElementById(
+            "userCount"
+        )
+        .innerText =
+        users.length;
+
+    document
+        .getElementById(
+            "topupCount"
+        )
+        .innerText =
+        topups.filter(
+            x => x.status === "pending"
+        ).length;
+
+    document
+        .getElementById(
+            "orderCount"
+        )
+        .innerText =
+        orders.length;
+
+}
+
+
+/* =========================
+   USERS
+========================= */
+
+function renderUsers(){
+
+    const tbody =
+        document
+            .getElementById(
+                "users"
+            );
+
+    if(users.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    Chưa có tài khoản.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    tbody.innerHTML =
+        users.map(
+            user => `
+
+            <tr>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(
+                            user.username
+                        )}
+                    </strong>
+                </td>
+
+                <td class="green">
+                    ${money(user.balance)}
+                </td>
+
+                <td>
+                    ${formatDate(
+                        user.createdAt
+                    )}
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button
+                            class="primary"
+                            onclick="
+                                addBalance(
+                                    '${user.id}'
+                                )
+                            ">
+
+                            ➕ Cộng tiền
+
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="
+                                removeBalance(
+                                    '${user.id}'
+                                )
+                            ">
+
+                            ➖ Trừ tiền
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `
+        ).join("");
+
+}
+
+
+/* =========================
+   TOPUPS
+========================= */
+
+function renderTopups(){
+
+    const box =
+        document
+            .getElementById(
+                "topups"
+            );
+
+    if(topups.length === 0){
+
+        box.innerHTML = `
+            <p style="color:#8993a5;">
+                Chưa có yêu cầu nạp tiền.
+            </p>
+        `;
+
+        return;
+
+    }
+
+    box.innerHTML =
+        topups.map(
+            topup => {
+
+                let buttons = "";
+
+                if(
+                    topup.status ===
+                    "pending"
+                ){
+
+                    buttons = `
+
+                        <button
+                            class="primary"
+                            onclick="
+                                approveTopup(
+                                    '${topup.id}'
+                                )
+                            ">
+
+                            ✅ DUYỆT
+
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="
+                                rejectTopup(
+                                    '${topup.id}'
+                                )
+                            ">
+
+                            ❌ TỪ CHỐI
+
+                        </button>
+
+                    `;
+
+                }
+
+                return `
+
+                <div class="card">
+
+                    <h3>
+                        💳 ${escapeHTML(
+                            topup.username
+                        )}
+                    </h3>
+
+                    <p>
+                        Mã:
+                        <strong>
+                            ${escapeHTML(
+                                topup.id
+                            )}
+                        </strong>
+                    </p>
+
+                    <p>
+                        Số tiền:
+                        <span class="green">
+                            ${money(
+                                topup.amount
+                            )}
+                        </span>
+                    </p>
+
+                    <p>
+                        Phương thức:
+                        ${escapeHTML(
+                            topup.method
+                        )}
+                    </p>
+
+                    <p>
+                        Thời gian:
+                        ${formatDate(
+                            topup.createdAt
+                        )}
+                    </p>
+
+                    <div class="status">
+
+                        Trạng thái:
+                        ${statusText(
+                            topup.status
+                        )}
+
+                    </div>
+
+                    <div class="actions">
+
+                        ${buttons}
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================
+   ORDERS
+========================= */
+
+function renderOrders(){
+
+    const tbody =
+        document
+            .getElementById(
+                "orders"
+            );
+
+    if(orders.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    Chưa có đơn hàng.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    tbody.innerHTML =
+        orders.map(
+            order => `
+
+            <tr>
+
+                <td>
+                    ${escapeHTML(
+                        order.id
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        order.username ||
+                        "N/A"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        order.product
+                    )}
+                </td>
+
+                <td class="green">
+                    ${money(
+                        order.price
+                    )}
+                </td>
+
+                <td>
+                    ${statusText(
+                        order.status
+                    )}
+                </td>
+
+            </tr>
+
+        `
+        ).join("");
+
+}
+
+
+/* =========================
+   APPROVE TOPUP
+========================= */
+
+async function approveTopup(
+    id
+){
+
+    if(
+        !confirm(
+            "Bạn chắc chắn muốn DUYỆT yêu cầu nạp này?"
+        )
+    ){
+
+        return;
+
+    }
+
+    try{
+
+        await api(
+            `/api/admin/topups/${encodeURIComponent(id)}/approve`,
+            {
+                method:"POST",
+                body:"{}"
+            }
+        );
+
+        alert(
+            "✅ Đã duyệt nạp tiền."
+        );
+
+        await loadAll();
+
+    }catch(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   REJECT TOPUP
+========================= */
+
+async function rejectTopup(
+    id
+){
+
+    if(
+        !confirm(
+            "Bạn chắc chắn muốn TỪ CHỐI yêu cầu này?"
+        )
+    ){
+
+        return;
+
+    }
+
+    try{
+
+        await api(
+            `/api/admin/topups/${encodeURIComponent(id)}/reject`,
+            {
+                method:"POST",
+                body:"{}"
+            }
+        );
+
+        alert(
+            "Đã từ chối yêu cầu."
+        );
+
+        await loadAll();
+
+    }catch(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   ADD BALANCE
+========================= */
+
+async function addBalance(
+    userId
+){
+
+    const input =
+        prompt(
+            "Nhập số tiền muốn cộng:"
+        );
+
+    if(input === null){
+
+        return;
+
+    }
+
+    const amount =
+        Number(input);
+
+    if(
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ){
+
+        alert(
+            "Số tiền không hợp lệ."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        await api(
+            `/api/admin/users/${encodeURIComponent(userId)}/add-balance`,
+            {
+                method:"POST",
+
+                body:JSON.stringify({
+                    amount:amount
+                })
+
+            }
+        );
+
+        alert(
+            "✅ Đã cộng tiền."
+        );
+
+        await loadAll();
+
+    }catch(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   REMOVE BALANCE
+========================= */
+
+async function removeBalance(
+    userId
+){
+
+    const input =
+        prompt(
+            "Nhập số tiền muốn trừ:"
+        );
+
+    if(input === null){
+
+        return;
+
+    }
+
+    const amount =
+        Number(input);
+
+    if(
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ){
+
+        alert(
+            "Số tiền không hợp lệ."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        await api(
+            `/api/admin/users/${encodeURIComponent(userId)}/remove-balance`,
+            {
+                method:"POST",
+
+                body:JSON.stringify({
+                    amount:amount
+                })
+
+            }
+        );
+
+        alert(
+            "✅ Đã trừ tiền."
+        );
+
+        await loadAll();
+
+    }catch(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   FORMAT
+========================= */
+
+function money(
+    value
+){
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "vi-VN"
+    ) + "đ";
+
+}
+
+
+function formatDate(
+    value
+){
+
+    if(!value){
+
+        return "N/A";
+
+    }
+
+    return new Date(
+        value
+    ).toLocaleString(
+        "vi-VN"
+    );
+
+}
+
+
+function statusText(
+    status
+){
+
+    if(status === "approved"){
+
+        return `
+            <span class="green">
+                🟢 ĐÃ DUYỆT
+            </span>
+        `;
+
+    }
+
+    if(status === "rejected"){
+
+        return `
+            <span class="red">
+                🔴 TỪ CHỐI
+            </span>
+        `;
+
+    }
+
+    return `
+        <span class="yellow">
+            ⏳ CHỜ DUYỆT
+        </span>
+    `;
+
+}
+
+
+function escapeHTML(
+    text
+){
+
+    return String(
+        text ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+</script>
+
+</body>
+</html>
