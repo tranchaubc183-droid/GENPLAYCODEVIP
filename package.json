@@ -1,0 +1,12 @@
+{
+  "name": "thang36-shop",
+  "version": "1.0.0",
+  "description": "THANG36 Shop Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
