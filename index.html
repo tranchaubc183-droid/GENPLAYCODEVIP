@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>THANG36 | GENPLAY SHOP</title>
 
 <style>
@@ -11,6 +12,10 @@
     margin:0;
     padding:0;
     font-family:Arial,sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
@@ -413,7 +418,7 @@ nav button:hover{
     font-size:20px;
 }
 
-/* SUCCESS POPUP */
+/* SUCCESS */
 
 .success-overlay{
     display:none;
@@ -438,19 +443,6 @@ nav button:hover{
     border-radius:25px;
     padding:40px 30px;
     text-align:center;
-    box-shadow:0 0 50px rgba(69,255,136,.25);
-    animation:popup .25s ease;
-}
-
-@keyframes popup{
-    from{
-        transform:scale(.8);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
 }
 
 .success-icon{
@@ -488,6 +480,27 @@ nav button:hover{
     cursor:pointer;
 }
 
+/* ORDER */
+
+.order-result{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    border:1px solid #45ff88;
+    border-radius:12px;
+    background:#101820;
+}
+
+.order-result.show{
+    display:block;
+}
+
+.order-id{
+    color:#45ff88;
+    font-weight:bold;
+    font-size:20px;
+}
+
 footer{
     text-align:center;
     border-top:1px solid #202938;
@@ -521,6 +534,7 @@ footer{
 <body>
 
 <header>
+
 <div class="nav">
 
 <div class="logo">
@@ -551,9 +565,13 @@ onclick="openCart()">
 </button>
 
 </nav>
+
 </div>
+
 </header>
 
+
+<!-- HERO -->
 
 <section class="hero" id="home">
 
@@ -567,21 +585,29 @@ CHÀO MỪNG ĐẾN VỚI
 </h1>
 
 <p>
+
 Hello mấy thằng em 😎
+
 <br><br>
 
 Chào mừng đến với web tụi anh.
+
 <br>
 
 Web uy tín, giá dễ tiếp cận.
+
 <br><br>
 
-🔥 Code 1 ngày<br>
-🔥 Code 1 tuần<br>
+🔥 Code 1 ngày
+<br>
+🔥 Code 1 tuần
+<br>
 🔥 Code 1 tháng
+
 </p>
 
 </div>
+
 
 <div class="hero-image">
 
@@ -592,8 +618,11 @@ alt="GenPlay">
 </div>
 
 </div>
+
 </section>
 
+
+<!-- TERMS -->
 
 <section class="container">
 
@@ -621,6 +650,8 @@ Vui lòng đợi shop cập nhật thêm sản phẩm.
 
 </section>
 
+
+<!-- TOPUP -->
 
 <section class="container" id="topup">
 
@@ -700,7 +731,7 @@ onclick="selectCard(200000,this)">
 
 <div id="cardForm" style="display:none;">
 
-<h3>📝 THÔNG TIN THẺ</h3>
+<h3>📝 THÔNG TIN NẠP THẺ</h3>
 
 <br>
 
@@ -710,7 +741,8 @@ onclick="selectCard(200000,this)">
 id="cardCode"
 class="input"
 type="text"
-placeholder="Nhập mã thẻ">
+placeholder="Nhập mã thẻ"
+autocomplete="off">
 
 <br><br>
 
@@ -720,15 +752,15 @@ placeholder="Nhập mã thẻ">
 id="cardSerial"
 class="input"
 type="text"
-placeholder="Nhập serial">
+placeholder="Nhập serial"
+autocomplete="off">
 
 <p
 id="selectedInfo"
 style="
 color:#45ff88;
 margin-top:15px;
-font-weight:bold;
-">
+font-weight:bold;">
 </p>
 
 <button
@@ -739,12 +771,25 @@ XÁC NHẬN THANH TOÁN
 
 </button>
 
+<p style="
+color:#8993a5;
+font-size:13px;
+margin-top:12px;
+line-height:1.6;">
+
+Thông tin thẻ không được gửi lên Discord.
+Shop sẽ kiểm tra giao dịch trước khi xử lý.
+
+</p>
+
 </div>
 
 </div>
 
 </section>
 
+
+<!-- PRODUCTS -->
 
 <section class="container" id="products">
 
@@ -753,6 +798,7 @@ XÁC NHẬN THANH TOÁN
 </h2>
 
 <div class="products">
+
 
 <div class="product">
 
@@ -764,9 +810,13 @@ alt="GenPlay">
 
 <h3>GenPlay 1 Ngày</h3>
 
-<p>Code sử dụng 1 ngày</p>
+<p>
+Code sử dụng 1 ngày
+</p>
 
-<div class="price">13.000đ</div>
+<div class="price">
+13.000đ
+</div>
 
 <button
 class="buy"
@@ -777,6 +827,7 @@ onclick="addCart('GenPlay 1 Ngày',13000)">
 </button>
 
 </div>
+
 </div>
 
 
@@ -790,9 +841,13 @@ alt="GenPlay">
 
 <h3>GenPlay 1 Tuần</h3>
 
-<p>Code sử dụng 1 tuần</p>
+<p>
+Code sử dụng 1 tuần
+</p>
 
-<div class="price">49.000đ</div>
+<div class="price">
+49.000đ
+</div>
 
 <button
 class="buy"
@@ -803,6 +858,7 @@ onclick="addCart('GenPlay 1 Tuần',49000)">
 </button>
 
 </div>
+
 </div>
 
 
@@ -816,9 +872,13 @@ alt="GenPlay">
 
 <h3>GenPlay 1 Tháng</h3>
 
-<p>Code sử dụng 1 tháng</p>
+<p>
+Code sử dụng 1 tháng
+</p>
 
-<div class="price">120.000đ</div>
+<div class="price">
+120.000đ
+</div>
 
 <button
 class="buy"
@@ -829,12 +889,15 @@ onclick="addCart('GenPlay 1 Tháng',120000)">
 </button>
 
 </div>
+
 </div>
 
 </div>
 
 </section>
 
+
+<!-- UPDATE -->
 
 <section class="container">
 
@@ -855,11 +918,15 @@ Vui lòng đợi shop cập nhật thêm sản phẩm.
 </section>
 
 
+<!-- SUPPORT -->
+
 <section class="container">
 
 <div class="box support">
 
-<h2>💬 HỖ TRỢ & LIÊN HỆ</h2>
+<h2>
+💬 HỖ TRỢ & LIÊN HỆ
+</h2>
 
 <p>
 Vào Discord nhận mã giảm giá 10%.
@@ -870,13 +937,17 @@ Vào Discord nhận mã giảm giá 10%.
 <button
 class="support-btn"
 onclick="openDiscord()">
+
 💬 Discord
+
 </button>
 
 <button
 class="support-btn"
 onclick="openTikTok()">
+
 🎵 TikTok THANG36
+
 </button>
 
 </div>
@@ -887,9 +958,11 @@ onclick="openTikTok()">
 
 
 <footer>
+
 THANG36 SHOP © 2026
 <br>
 GENPLAY CODE STORE
+
 </footer>
 
 
@@ -903,7 +976,11 @@ onclick="closeCart()">
 ×
 </button>
 
-<h2>🛒 GIỎ HÀNG</h2>
+<h2>
+🛒 GIỎ HÀNG
+</h2>
+
+<br>
 
 <div id="cartItems">
 
@@ -916,10 +993,16 @@ Chưa có sản phẩm.
 
 <div class="discount-box">
 
-<h3>🎁 MÃ GIẢM GIÁ</h3>
+<h3>
+🎁 MÃ GIẢM GIÁ
+</h3>
 
-<p style="color:#8993a5;margin-top:5px;">
+<p style="
+color:#8993a5;
+margin-top:5px;">
+
 Nhập mã để giảm 10%.
+
 </p>
 
 <input
@@ -960,6 +1043,7 @@ THÀNH TIỀN:
 
 </div>
 
+
 <button
 class="checkout"
 onclick="checkout()">
@@ -971,7 +1055,7 @@ XÁC NHẬN THANH TOÁN
 </div>
 
 
-<!-- SUCCESS POPUP -->
+<!-- SUCCESS -->
 
 <div
 class="success-overlay"
@@ -992,9 +1076,31 @@ CẢM ƠN BẠN ĐÃ MUA HÀNG!
 </p>
 
 <p class="luck">
-🍀 Chúc thằng em 8386 may mắn<br>
+🍀 Chúc thằng em 8386 may mắn
+<br>
 ✨ Vạn sự như ý!
 </p>
+
+<div
+id="successOrder"
+class="order-result">
+
+Mã đơn:
+
+<div
+id="successOrderId"
+class="order-id">
+</div>
+
+<p style="
+margin-top:8px;
+font-size:14px;">
+
+Trạng thái: ⏳ CHỜ DUYỆT
+
+</p>
+
+</div>
 
 <button
 class="success-close"
@@ -1011,6 +1117,13 @@ onclick="closeSuccess()">
 
 <script>
 
+/* =========================
+   CẤU HÌNH
+========================= */
+
+const API_URL =
+"https://thang36-shop.onrender.com";
+
 const DISCORD =
 "https://discord.gg/5N876FHRz";
 
@@ -1019,6 +1132,11 @@ const TIKTOK =
 
 const DISCOUNT_CODE =
 "thang36vipvailon";
+
+
+/* =========================
+   BIẾN
+========================= */
 
 let discountApplied = false;
 
@@ -1029,16 +1147,29 @@ let selectedNetwork = "Viettel";
 let selectedAmount = 0;
 
 
+/* =========================
+   ĐIỀU HƯỚNG
+========================= */
+
 function go(id){
 
-    document
-    .getElementById(id)
-    .scrollIntoView({
-        behavior:"smooth"
-    });
+    const element =
+        document.getElementById(id);
+
+    if(element){
+
+        element.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
 
 }
 
+
+/* =========================
+   LINK
+========================= */
 
 function openDiscord(){
 
@@ -1048,7 +1179,6 @@ function openDiscord(){
     );
 
 }
-
 
 function openTikTok(){
 
@@ -1060,6 +1190,10 @@ function openTikTok(){
 }
 
 
+/* =========================
+   NẠP THẺ
+========================= */
+
 function changeNetwork(
     network,
     button
@@ -1068,17 +1202,21 @@ function changeNetwork(
     selectedNetwork = network;
 
     document
-    .getElementById("networkTitle")
-    .innerText =
-    "Thẻ " + network;
+        .getElementById("networkTitle")
+        .innerText =
+        "Thẻ " + network;
 
     document
-    .querySelectorAll(
-        ".topup-tabs button"
-    )
-    .forEach(btn=>{
-        btn.classList.remove("active");
-    });
+        .querySelectorAll(
+            ".topup-tabs button"
+        )
+        .forEach(btn => {
+
+            btn.classList.remove(
+                "active"
+            );
+
+        });
 
     button.classList.add("active");
 
@@ -1093,48 +1231,59 @@ function selectCard(
     selectedAmount = amount;
 
     document
-    .querySelectorAll(
-        ".topup-card"
-    )
-    .forEach(card=>{
-        card.classList.remove("active");
-    });
+        .querySelectorAll(
+            ".topup-card"
+        )
+        .forEach(card => {
+
+            card.classList.remove(
+                "active"
+            );
+
+        });
 
     element.classList.add("active");
 
     const receive =
-    Math.round(amount * 0.82);
+        Math.round(
+            amount * 0.82
+        );
 
     document
-    .getElementById("cardForm")
-    .style.display = "block";
+        .getElementById("cardForm")
+        .style.display = "block";
 
     document
-    .getElementById("selectedInfo")
-    .innerText =
-    selectedNetwork +
-    " " +
-    amount.toLocaleString("vi-VN") +
-    "đ → nhận " +
-    receive.toLocaleString("vi-VN") +
-    "đ";
+        .getElementById("selectedInfo")
+        .innerText =
+        selectedNetwork +
+        " " +
+        amount.toLocaleString("vi-VN") +
+        "đ → nhận " +
+        receive.toLocaleString("vi-VN") +
+        "đ";
 
 }
 
 
+/*
+Không gửi mã thẻ/serial lên Discord
+hoặc server.
+*/
+
 function submitCard(){
 
     const code =
-    document
-    .getElementById("cardCode")
-    .value
-    .trim();
+        document
+            .getElementById("cardCode")
+            .value
+            .trim();
 
     const serial =
-    document
-    .getElementById("cardSerial")
-    .value
-    .trim();
+        document
+            .getElementById("cardSerial")
+            .value
+            .trim();
 
     if(selectedAmount === 0){
 
@@ -1143,21 +1292,42 @@ function submitCard(){
         );
 
         return;
+
     }
 
-    if(code === "" || serial === ""){
+    if(
+        code === "" ||
+        serial === ""
+    ){
 
         alert(
-            "Vui lòng nhập đầy đủ mã thẻ và serial!"
+            "Vui lòng nhập đầy đủ thông tin!"
         );
 
         return;
+
     }
 
-    showSuccess();
+    alert(
+        "Thông tin đã được nhập. " +
+        "Shop sẽ kiểm tra giao dịch " +
+        "trước khi xử lý."
+    );
+
+    document
+        .getElementById("cardCode")
+        .value = "";
+
+    document
+        .getElementById("cardSerial")
+        .value = "";
 
 }
 
+
+/* =========================
+   GIỎ HÀNG
+========================= */
 
 function addCart(
     name,
@@ -1176,143 +1346,6 @@ function addCart(
 }
 
 
-function applyDiscount(){
-
-    const input =
-    document
-    .getElementById("discountCode")
-    .value
-    .trim();
-
-    const message =
-    document
-    .getElementById("discountMessage");
-
-    if(
-        input.toLowerCase() ===
-        DISCOUNT_CODE.toLowerCase()
-    ){
-
-        discountApplied = true;
-
-        message.innerText =
-        "✅ Áp dụng thành công! Giảm 10%.";
-
-        message.style.color =
-        "#45ff88";
-
-    }else{
-
-        discountApplied = false;
-
-        message.innerText =
-        "❌ Mã giảm giá không đúng.";
-
-        message.style.color =
-        "#ff5555";
-
-    }
-
-    updateCart();
-
-}
-
-
-function updateCart(){
-
-    document
-    .getElementById("cartCount")
-    .innerText =
-    cart.length;
-
-    const box =
-    document
-    .getElementById("cartItems");
-
-    let subtotal = 0;
-
-    cart.forEach(item=>{
-        subtotal += item.price;
-    });
-
-    let discount = 0;
-
-    if(
-        discountApplied &&
-        subtotal > 0
-    ){
-
-        discount =
-        Math.round(
-            subtotal * 0.10
-        );
-
-    }
-
-    const total =
-    subtotal - discount;
-
-    if(cart.length === 0){
-
-        box.innerHTML =
-        `<p style="color:#8993a5;">
-        Chưa có sản phẩm.
-        </p>`;
-
-    }else{
-
-        let html = "";
-
-        cart.forEach(
-        (item,index)=>{
-
-            html += `
-            <div class="cart-item">
-
-                <strong>
-                ${item.name}
-                </strong>
-
-                <div class="cart-item-price">
-                ${item.price.toLocaleString("vi-VN")}đ
-                </div>
-
-                <button
-                class="remove"
-                onclick="removeCart(${index})">
-                Xóa
-                </button>
-
-            </div>
-            `;
-
-        });
-
-        box.innerHTML = html;
-    }
-
-    document
-    .getElementById("cartSubtotal")
-    .innerText =
-    subtotal.toLocaleString("vi-VN")
-    + "đ";
-
-    document
-    .getElementById("cartDiscount")
-    .innerText =
-    "-" +
-    discount.toLocaleString("vi-VN")
-    + "đ";
-
-    document
-    .getElementById("cartTotal")
-    .innerText =
-    total.toLocaleString("vi-VN")
-    + "đ";
-
-}
-
-
 function removeCart(index){
 
     cart.splice(index,1);
@@ -1325,9 +1358,9 @@ function removeCart(index){
 function openCart(){
 
     document
-    .getElementById("cart")
-    .classList
-    .add("open");
+        .getElementById("cart")
+        .classList
+        .add("open");
 
 }
 
@@ -1335,16 +1368,191 @@ function openCart(){
 function closeCart(){
 
     document
-    .getElementById("cart")
-    .classList
-    .remove("open");
+        .getElementById("cart")
+        .classList
+        .remove("open");
 
 }
 
 
-/* THANH TOÁN */
+/* =========================
+   GIẢM GIÁ
+========================= */
 
-function checkout(){
+function applyDiscount(){
+
+    const input =
+        document
+            .getElementById(
+                "discountCode"
+            )
+            .value
+            .trim();
+
+    const message =
+        document
+            .getElementById(
+                "discountMessage"
+            );
+
+    if(
+        input.toLowerCase() ===
+        DISCOUNT_CODE.toLowerCase()
+    ){
+
+        discountApplied = true;
+
+        message.innerText =
+            "✅ Áp dụng thành công! Giảm 10%.";
+
+        message.style.color =
+            "#45ff88";
+
+    }else{
+
+        discountApplied = false;
+
+        message.innerText =
+            "❌ Mã giảm giá không đúng.";
+
+        message.style.color =
+            "#ff5555";
+
+    }
+
+    updateCart();
+
+}
+
+
+/* =========================
+   CẬP NHẬT GIỎ
+========================= */
+
+function updateCart(){
+
+    document
+        .getElementById("cartCount")
+        .innerText =
+        cart.length;
+
+    const box =
+        document
+            .getElementById(
+                "cartItems"
+            );
+
+    let subtotal = 0;
+
+    cart.forEach(item => {
+
+        subtotal += item.price;
+
+    });
+
+
+    let discount = 0;
+
+    if(
+        discountApplied &&
+        subtotal > 0
+    ){
+
+        discount =
+            Math.round(
+                subtotal * 0.10
+            );
+
+    }
+
+
+    const total =
+        subtotal - discount;
+
+
+    if(cart.length === 0){
+
+        box.innerHTML = `
+            <p style="color:#8993a5;">
+                Chưa có sản phẩm.
+            </p>
+        `;
+
+    }else{
+
+        let html = "";
+
+        cart.forEach(
+            (item,index) => {
+
+                html += `
+                    <div class="cart-item">
+
+                        <strong>
+                            ${escapeHTML(item.name)}
+                        </strong>
+
+                        <div class="cart-item-price">
+                            ${item.price.toLocaleString("vi-VN")}đ
+                        </div>
+
+                        <button
+                            class="remove"
+                            onclick="removeCart(${index})">
+
+                            Xóa
+
+                        </button>
+
+                    </div>
+                `;
+
+            }
+        );
+
+        box.innerHTML = html;
+
+    }
+
+
+    document
+        .getElementById(
+            "cartSubtotal"
+        )
+        .innerText =
+        subtotal.toLocaleString(
+            "vi-VN"
+        ) + "đ";
+
+
+    document
+        .getElementById(
+            "cartDiscount"
+        )
+        .innerText =
+        "-" +
+        discount.toLocaleString(
+            "vi-VN"
+        ) + "đ";
+
+
+    document
+        .getElementById(
+            "cartTotal"
+        )
+        .innerText =
+        total.toLocaleString(
+            "vi-VN"
+        ) + "đ";
+
+}
+
+
+/* =========================
+   THANH TOÁN / TẠO ĐƠN
+========================= */
+
+async function checkout(){
 
     if(cart.length === 0){
 
@@ -1353,21 +1561,183 @@ function checkout(){
         );
 
         return;
+
     }
 
-    showSuccess();
+
+    let subtotal = 0;
+
+    cart.forEach(item => {
+
+        subtotal += item.price;
+
+    });
+
+
+    let discount = 0;
+
+    if(discountApplied){
+
+        discount =
+            Math.round(
+                subtotal * 0.10
+            );
+
+    }
+
+
+    const total =
+        subtotal - discount;
+
+
+    const productNames =
+        cart
+            .map(item => item.name)
+            .join(", ");
+
+
+    const button =
+        document.querySelector(
+            ".checkout"
+        );
+
+    button.disabled = true;
+
+    button.innerText =
+        "ĐANG TẠO ĐƠN...";
+
+
+    try{
+
+        const response =
+            await fetch(
+                API_URL +
+                "/api/orders",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        product:
+                            productNames,
+
+                        price:
+                            total
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !response.ok ||
+            !data.success
+        ){
+
+            throw new Error(
+                data.message ||
+                "Không tạo được đơn"
+            );
+
+        }
+
+
+        localStorage.setItem(
+            "thang36_last_order",
+            JSON.stringify(
+                data.order
+            )
+        );
+
+
+        cart = [];
+
+        discountApplied = false;
+
+
+        document
+            .getElementById(
+                "discountCode"
+            )
+            .value = "";
+
+
+        updateCart();
+
+        closeCart();
+
+
+        showSuccess(
+            data.order.id
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Không thể tạo đơn hàng. " +
+            "Vui lòng thử lại."
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.innerText =
+            "XÁC NHẬN THANH TOÁN";
+
+    }
 
 }
 
 
-/* POPUP */
+/* =========================
+   SUCCESS
+========================= */
 
-function showSuccess(){
+function showSuccess(orderId){
+
+    const result =
+        document
+            .getElementById(
+                "successOrder"
+            );
+
+    const id =
+        document
+            .getElementById(
+                "successOrderId"
+            );
+
+    if(orderId){
+
+        id.innerText =
+            orderId;
+
+        result.classList.add(
+            "show"
+        );
+
+    }
 
     document
-    .getElementById("successOverlay")
-    .classList
-    .add("show");
+        .getElementById(
+            "successOverlay"
+        )
+        .classList
+        .add("show");
 
 }
 
@@ -1375,11 +1745,36 @@ function showSuccess(){
 function closeSuccess(){
 
     document
-    .getElementById("successOverlay")
-    .classList
-    .remove("show");
+        .getElementById(
+            "successOverlay"
+        )
+        .classList
+        .remove("show");
 
 }
+
+
+/* =========================
+   BẢO VỆ HIỂN THỊ TÊN
+========================= */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   KHỞI TẠO
+========================= */
+
+updateCart();
 
 </script>
 
